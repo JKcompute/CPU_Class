@@ -14,5 +14,3 @@ always_comb
 	end
 	
 endmodule : mux2
-
-//this is a test
