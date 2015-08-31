@@ -37,7 +37,17 @@ fetch1,
 fetch2,
 fetch3,
 decode,
-s_add
+s_add,
+s_and,
+s_break,
+s_not,
+s_branch,
+s_calc_addr_ldr,
+s_ldr1,
+s_ldr2,
+s_calc_addr_str,
+s_str1,
+s_str2
 // currently only up to add instruction 
 } state, next_state;
 
@@ -90,8 +100,68 @@ begin : state_actions
 			/* DR <= SRA + SRB */
 			aluop = alu_add;
 			load_regfile = 1;
-			regfilemux_sel = 0;
+			//regfilemux_sel = 0;
 			load_cc = 1;
+		end
+
+		s_and: begin
+			/* DR <= SRA & SRB */
+			aluop = alu_and;
+			load_regfile = 1;
+			load_cc = 1;
+		end
+
+		s_not: begin
+			/* DR <= NOT(SRA) */
+			aluop = alu_not;
+			load_regfile = 1;
+			load_cc = 1;
+		end
+
+		s_branch: begin
+			/* PC <= PC + SEXT(IR[8:0] << 1) */
+			pcmux_sel = 1;
+			load_pc = 1;
+		end
+		
+		s_calc_addr_ldr: begin
+			/* MAR <= + SEXT(IR[5:0] << 1) */
+			alumux_sel = 1;
+			aluop = alu_add;
+			load_mar = 1;
+		end
+
+		s_ldr1: begin
+			/* MDR <= M[MAR] */
+			mdrmux_sel = 1;
+			load_mdr = 1;
+			mem_read = 1;
+		end
+
+		s_ldr2: begin
+			/* DR <= MDR */
+			regfilemux_sel = 1;
+			load_regfile = 1;
+			load_cc = 1;
+		end
+
+		s_calc_addr_str: begin
+			/* MAR <= + SEXT(IR[5:0] << 1) */
+			alumux_sel = 1;
+			aluop = alu_add;
+			load_mar = 1;
+		end
+
+		s_str1: begin
+			/* MDR <= SR */
+			storemux_sel = 1;
+			aluop = alu_pass;
+			load_mdr = 1;
+		end
+
+		s_str2: begin
+			/* M[MAR] <= MDR */
+			mem_write = 1;
 		end
 		
 		default: /* Do nothing */;
@@ -121,10 +191,88 @@ begin : next_state_logic
 				op_add: begin
 					next_state <= s_add;
 				end
-				default: next_state <= s_add; //todo fix this
+				op_and: begin
+					next_state <= s_and;
+				end 
+			    op_br   :begin
+					next_state <= s_break;
+			    end
+			    op_jmp  :begin
+					next_state <= s_and;
+			    end   /* also RET */
+			    op_jsr  :begin
+					next_state <= s_and;
+			    end   /* also JSRR */
+			    op_ldb  :begin
+					next_state <= s_and;
+			    end
+			    op_ldi  :begin
+					next_state <= s_and;
+			    end
+			    op_ldr  :begin
+					next_state <= s_calc_addr_ldr;
+			    end
+			    op_lea  :begin
+					next_state <= s_and;
+			    end
+			    op_not  :begin
+					next_state <= s_not;
+			    end
+			    op_rti  :begin
+					next_state <= s_and;
+			    end
+			    op_shf  :begin
+					next_state <= s_and;
+			    end
+			    op_stb  :begin
+					next_state <= s_and;
+			    end
+			    op_sti  :begin
+					next_state <= s_and;
+			    end
+			    op_str  :begin
+					next_state <= s_calc_addr_str;
+			    end
+			    op_trap :begin
+					next_state <= s_and;
+			    end
+				default: next_state <= fetch1; 
+				// TODO, is this a safe defaul case?
 			endcase
 		
 		s_add: begin
+			next_state = fetch1;
+		end
+
+		s_and: begin
+			next_state = fetch1;
+		end
+
+		s_not: begin
+			next_state = fetch1;
+		end
+
+		s_calc_addr_ldr: begin
+			next_state = s_ldr1;
+		end
+
+		s_ldr1: begin
+			next_state = s_ldr2;
+		end
+
+		s_ldr2: begin
+			next_state = fetch1;
+		end
+
+		s_calc_addr_str: begin
+			next_state = s_str1;
+		end
+
+		s_str1: begin
+			next_state = s_str2;
+		end
+
+		s_str2: begin
 			next_state = fetch1;
 		end
 		
