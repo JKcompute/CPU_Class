@@ -24,8 +24,12 @@ module datapath
     /* declare more ports here */
     input lc3b_word mem_rdata,
 
-    output [3:0] opcode,
-    output lc3b_word mem_address, mem_wdata
+    //output [3:0] opcode,
+    output lc3b_opcode opcode,
+    output lc3b_word mem_address, 
+    output lc3b_word mem_wdata,
+
+    output logic branch_enable
 
 );
 
@@ -53,7 +57,7 @@ lc3b_reg storemux_out;
 lc3b_nzp cc_out;
 lc3b_nzp gencc_out;
 
-logic branch_enable;
+
 
 lc3b_offset6 IR_offset6_out;
 lc3b_offset9 IR_offset9_out;
@@ -229,8 +233,5 @@ adj #(.width(6)) adj6
     .in(IR_offset6_out),
     .out(adj6_out)
 );
-
-
-
 
 endmodule : datapath

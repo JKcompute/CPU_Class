@@ -20,6 +20,9 @@ module control
 	
 	output lc3b_aluop aluop,
 	/* et cetera */
+	output logic storemux_sel,
+	output logic alumux_sel,
+	input logic branch_enable,
 	
 	/* Memory signals */
 	input mem_resp,
@@ -44,11 +47,19 @@ begin : state_actions
 	load_pc = 1'b0;
 	load_ir = 1'b0;
 	load_regfile = 1'b0;
+	load_mar = 1'b0;
+	load_mdr = 1'b0;
+	load_cc = 1'b0;
+	pcmux_sel = 1'b0;
+	storemux_sel = 1'b0;
+	alumux_sel = 1'b0;
+	regfilemux_sel = 1'b0;
+	marmux_sel = 1'b0;
+	mdrmux_sel = 1'b0;
 	aluop = alu_add;
 	mem_read = 1'b0;
 	mem_write = 1'b0;
 	mem_byte_enable = 2'b11;
-	/* et cetera (see Appendix E) */
 	
 	/* Actions for each state */
 	case(state)
@@ -91,6 +102,35 @@ always_comb
 begin : next_state_logic
     /* Next state information and conditions (if any)
      * for transitioning between states */
+
+	case(state)
+		fetch1: begin
+			next_state <= fetch2; 
+		end
+		
+		fetch2: begin
+			next_state <= fetch3;
+		end
+		
+		fetch3: begin
+			next_state <= decode;
+		end
+		
+		decode: 
+			case(opcode)
+				op_add: begin
+					next_state <= s_add;
+				end
+				default: next_state <= s_add; //todo fix this
+			endcase
+		
+		s_add: begin
+			next_state = fetch1;
+		end
+		
+		default: next_state = fetch1;
+	endcase
+
 end
 
 always_ff @(posedge clk)
@@ -100,3 +140,5 @@ begin: next_state_assignment
 end
 
 endmodule : control
+
+//test
