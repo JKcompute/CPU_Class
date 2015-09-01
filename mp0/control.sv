@@ -39,9 +39,9 @@ fetch3,
 decode,
 s_add,
 s_and,
-s_break,
 s_not,
-s_branch,
+s_br,
+s_br_taken,
 s_calc_addr_ldr,
 s_ldr1,
 s_ldr2,
@@ -118,7 +118,11 @@ begin : state_actions
 			load_cc = 1;
 		end
 
-		s_branch: begin
+		s_br: begin
+			/* Do nothing, we are checking if we should branch */
+		end
+		
+		s_br_taken: begin 
 			/* PC <= PC + SEXT(IR[8:0] << 1) */
 			pcmux_sel = 1;
 			load_pc = 1;
@@ -168,6 +172,8 @@ begin : state_actions
 	endcase
 end
 
+
+
 always_comb
 begin : next_state_logic
     /* Next state information and conditions (if any)
@@ -179,7 +185,10 @@ begin : next_state_logic
 		end
 		
 		fetch2: begin
-			next_state <= fetch3;
+			if (mem_resp == 0)
+				next_state <= fetch2;
+			else
+				next_state <= fetch3;
 		end
 		
 		fetch3: begin
@@ -195,7 +204,7 @@ begin : next_state_logic
 					next_state <= s_and;
 				end 
 			    op_br   :begin
-					next_state <= s_break;
+					next_state <= s_br;
 			    end
 			    op_jmp  :begin
 					next_state <= s_and;
@@ -257,7 +266,10 @@ begin : next_state_logic
 		end
 
 		s_ldr1: begin
-			next_state = s_ldr2;
+			if(mem_resp == 0)
+				next_state = s_ldr1;
+			else
+				next_state = s_ldr2;
 		end
 
 		s_ldr2: begin
@@ -273,8 +285,23 @@ begin : next_state_logic
 		end
 
 		s_str2: begin
+			if(mem_resp == 0)
+				next_state = s_str2;
+			else
+				next_state = fetch1;
+		end
+		
+		s_br: begin 
+			if(branch_enable == 0)
+				next_state = fetch1;
+			else
+				next_state = s_br_taken;
+		end	
+		
+		s_br_taken: begin
 			next_state = fetch1;
 		end
+			
 		
 		default: next_state = fetch1;
 	endcase

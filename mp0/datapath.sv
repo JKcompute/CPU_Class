@@ -6,7 +6,7 @@ module datapath
 
     /* control signals */
     input pcmux_sel,
-	input storemux_sel,
+	 input storemux_sel,
     input alumux_sel,
     input marmux_sel,
     input mdrmux_sel,
@@ -173,7 +173,7 @@ nzp_comparitor cccomp
     .out(branch_enable)
 );
 
-register cc
+register #(.width(3)) cc
 (
     .clk,
     .load(load_cc),
