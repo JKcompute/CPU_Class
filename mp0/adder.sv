@@ -1,7 +1,7 @@
 module adder #(parameter width = 16)
 (
 	input [width-1:0] a, b, 
-	output [width-1:0] result
+	output logic [width-1:0] result
 );
 
 always_comb

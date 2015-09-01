@@ -26,17 +26,17 @@ logic pcmux_sel_wire;
 logic regfilemux_sel_wire;
 logic storemux_sel_wire;
 logic alumux_sel_wire;
-logic resp_wire;
-logic read_wire;
-logic write_wire;
+//logic resp_wire;
+//logic read_wire;
+//logic write_wire;
 logic branch_enable_wire;
 
 lc3b_opcode opcode_wire;
 lc3b_aluop aluop_wire;
 
-lc3b_word wdata_wire;
-lc3b_word address_wire;
-lc3b_word rdata_wire;
+//lc3b_word wdata_wire;
+//lc3b_word address_wire;
+//lc3b_word rdata_wire;
 
 /* Instantiate MP 0 top level blocks here */
 
@@ -58,15 +58,14 @@ control control
 	.regfilemux_sel(regfilemux_sel_wire),
 	
 	.aluop(aluop_wire),
-	/* et cetera */
 	.storemux_sel(storemux_sel_wire),
 	.alumux_sel(alumux_sel_wire),
 	.branch_enable(branch_enable_wire),
 	
 	/* Memory signals */
-	.mem_resp(resp_wire),
-	.mem_read(read_wire),
-	.mem_write(write_wire),
+	.mem_resp(mem_resp),
+	.mem_read(mem_read),
+	.mem_write(mem_write),
 	.mem_byte_enable(mem_byte_enable)
 );
 
@@ -76,7 +75,7 @@ datapath datapath
 
     /* control signals */
     .pcmux_sel(pcmux_sel_wire),
-	.storemux_sel(storemux_sel_wire),
+	 .storemux_sel(storemux_sel_wire),
     .alumux_sel(alumux_sel_wire),
     .marmux_sel(marmux_sel_wire),
     .mdrmux_sel(mdrmux_sel_wire),
@@ -90,28 +89,13 @@ datapath datapath
     .load_regfile(load_regfile_wire),
 
     .aluop(aluop_wire),
-
-    /* declare more ports here */
-    .mem_rdata(rdata_wire),
-
+	 .branch_enable(branch_enable_wire),
     .opcode(opcode_wire),
-    .mem_address(address_wire), 
-    .mem_wdata(wdata_wire),
-    .branch_enable(branch_enable_wire)
-);
-
-magic_memory memory
-(
-	.clk,
-
-    /* Port A */
-    .read(read_wire),
-    .write(write_wire),
-    .wmask(mem_byte_enable),
-    .address(address_wire),
-    .wdata(wdata_wire),
-    .resp(resp_wire),
-    .rdata(rdata_wire)
+    
+	 /* declare more ports here */
+    .mem_rdata(mem_rdata),
+    .mem_address(mem_address), 
+    .mem_wdata(mem_wdata)
 );
 
 endmodule : mp0

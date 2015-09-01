@@ -1,7 +1,7 @@
 module nzp_comparitor 
 (
 	input [2:0] nzp_input, branch_cc,
-	output out 
+	output logic out 
 );
 
 always_comb
