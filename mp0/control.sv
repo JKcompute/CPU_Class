@@ -42,10 +42,9 @@ s_and,
 s_not,
 s_br,
 s_br_taken,
-s_calc_addr_ldr,
+s_calc_addr,
 s_ldr1,
 s_ldr2,
-s_calc_addr_str,
 s_str1,
 s_str2
 // currently only up to add instruction 
@@ -128,7 +127,7 @@ begin : state_actions
 			load_pc = 1;
 		end
 		
-		s_calc_addr_ldr: begin
+		s_calc_addr: begin
 			/* MAR <= + SEXT(IR[5:0] << 1) */
 			alumux_sel = 1;
 			aluop = alu_add;
@@ -147,13 +146,6 @@ begin : state_actions
 			regfilemux_sel = 1;
 			load_regfile = 1;
 			load_cc = 1;
-		end
-
-		s_calc_addr_str: begin
-			/* MAR <= + SEXT(IR[5:0] << 1) */
-			alumux_sel = 1;
-			aluop = alu_add;
-			load_mar = 1;
 		end
 
 		s_str1: begin
@@ -219,7 +211,7 @@ begin : next_state_logic
 					next_state <= s_and;
 			    end
 			    op_ldr  :begin
-					next_state <= s_calc_addr_ldr;
+					next_state <= s_calc_addr;
 			    end
 			    op_lea  :begin
 					next_state <= s_and;
@@ -240,7 +232,7 @@ begin : next_state_logic
 					next_state <= s_and;
 			    end
 			    op_str  :begin
-					next_state <= s_calc_addr_str;
+					next_state <= s_calc_addr;
 			    end
 			    op_trap :begin
 					next_state <= s_and;
@@ -261,8 +253,11 @@ begin : next_state_logic
 			next_state = fetch1;
 		end
 
-		s_calc_addr_ldr: begin
-			next_state = s_ldr1;
+		s_calc_addr: begin
+			if(opcode == op_ldr)
+				next_state = s_ldr1;
+			else
+				next_state = s_str1;
 		end
 
 		s_ldr1: begin
@@ -274,10 +269,6 @@ begin : next_state_logic
 
 		s_ldr2: begin
 			next_state = fetch1;
-		end
-
-		s_calc_addr_str: begin
-			next_state = s_str1;
 		end
 
 		s_str1: begin

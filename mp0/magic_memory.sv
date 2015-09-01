@@ -24,7 +24,8 @@ logic [15:0] internal_address;
 /* Initialize memory contents from memory.lst file */
 initial
 begin
-    $readmemh("memory.lst", mem);
+    //$readmemh("memory.lst", mem);  // Program for Provided Test
+	 $readmemh("memoryFactorial.lst", mem); // Factorial Program 
 end
 
 /* Calculate internal address */
