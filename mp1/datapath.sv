@@ -5,12 +5,12 @@ module datapath
     input clk,
 
     /* control signals */
-    input pcmux_sel,
+    input [1:0] pcmux_sel,
 	input storemux_sel,
     input [1:0] alumux_sel,
     input marmux_sel,
     input mdrmux_sel,
-    input regfilemux_sel,
+    input [1:0] regfilemux_sel,
 
     input load_pc,
     input load_cc,
@@ -54,7 +54,6 @@ lc3b_word adj6_out;
 lc3b_word sext5_out;
 lc3b_word imm4_out;
 
-
 lc3b_reg ir_sr1_out;
 lc3b_reg ir_sr2_out;
 lc3b_reg ir_dest_out;
@@ -62,7 +61,6 @@ lc3b_reg storemux_out;
 
 lc3b_nzp cc_out;
 lc3b_nzp gencc_out;
-
 
 lc3b_offset11 ir_offset11_out;
 lc3b_offset9 ir_offset9_out;
@@ -73,11 +71,13 @@ lc3b_imm4 ir_imm4_out;
 /*
  * PC
  */
-mux2 pcmux
+mux4 pcmux
 (
     .sel(pcmux_sel),
     .a(pc_plus2_out),
     .b(br_add_out),
+    .c(regfile_sr1_out),
+    .d(),
     .f(pcmux_out)
 );
 
@@ -151,11 +151,13 @@ mux2 #(.width(3)) storemux
 	.f(storemux_out)
 );
 
-mux2 regfilemux
+mux4 regfilemux
 (
     .sel(regfilemux_sel),
     .a(alu_out),
     .b(mem_wdata),
+    .c(br_add_out),
+    .d(),
     .f(regfilemux_out)
 );
 
@@ -255,11 +257,11 @@ adj #(.width(6)) adj6
     .out(adj6_out)
 );
 
+// Sext
 sext #(.width(5)) sext5
 (
     .in(ir_imm5_out),
     .out(sext5_out)
 );
-
 
 endmodule : datapath

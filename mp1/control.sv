@@ -18,8 +18,8 @@ module control
 	// Select
 	output logic marmux_sel,
 	output logic mdrmux_sel,
-	output logic pcmux_sel,
-	output logic regfilemux_sel,
+	output logic [1:0] pcmux_sel,
+	output logic [1:0] regfilemux_sel,
 	output lc3b_aluop aluop,
 	output logic storemux_sel,
 	output lc3b_alumux_sel alumux_sel,
@@ -46,7 +46,9 @@ s_calc_addr,
 s_ldr1,
 s_ldr2,
 s_str1,
-s_str2
+s_str2,
+s_jmp,
+s_lea
 } state, next_state;
 
 always_comb
@@ -58,10 +60,10 @@ begin : state_actions
 	load_mar = 1'b0;
 	load_mdr = 1'b0;
 	load_cc = 1'b0;
-	pcmux_sel = 1'b0;
+	pcmux_sel = 2'b00;
 	storemux_sel = 1'b0;
 	alumux_sel = 2'b00;
-	regfilemux_sel = 1'b0;
+	regfilemux_sel = 2'b00;
 	marmux_sel = 1'b0;
 	mdrmux_sel = 1'b0;
 	aluop = alu_add;
@@ -99,7 +101,6 @@ begin : state_actions
 			/* DR <= SRA + SEXT(imm5) */
 			aluop = alu_add;
 			load_regfile = 1;
-			//regfilemux_sel = 0;
 			load_cc = 1;
 			// this takes care of immidiate add.
 			alumux_sel = {1'b0, instruction5};
@@ -165,7 +166,17 @@ begin : state_actions
 			/* M[MAR] <= MDR */
 			mem_write = 1;
 		end
-		
+
+		s_jmp: begin
+			/* PC= BaseR = SR1 
+				ret is same thing, hard coded to R7 */
+			pcmux_sel = 2;
+			load_pc = 1;
+		end
+		s_lea: begin
+			regfilemux_sel = 2'b10;
+			load_regfile = 1;
+		end
 		default: /* Do nothing */;
 	endcase
 end
@@ -205,7 +216,7 @@ begin : next_state_logic
 					next_state <= s_br;
 			    end
 			    op_jmp  :begin
-					next_state <= s_and;
+					next_state <= s_jmp;
 			    end   /* also RET */
 			    op_jsr  :begin
 					next_state <= s_and;
@@ -220,7 +231,7 @@ begin : next_state_logic
 					next_state <= s_calc_addr;
 			    end
 			    op_lea  :begin
-					next_state <= s_and;
+					next_state <= s_lea;
 			    end
 			    op_not  :begin
 					next_state <= s_not;
@@ -296,6 +307,14 @@ begin : next_state_logic
 		end	
 		
 		s_br_taken: begin
+			next_state = fetch1;
+		end
+
+		s_jmp: begin
+			next_state = fetch1;
+		end
+
+		s_lea: begin
 			next_state = fetch1;
 		end
 			

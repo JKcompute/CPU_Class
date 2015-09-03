@@ -26,10 +26,8 @@ add wave -noupdate -radix decimal /mp1_tb/dut/datapath/alumux/b
 add wave -noupdate -radix decimal /mp1_tb/dut/datapath/alumux/c
 add wave -noupdate -radix decimal /mp1_tb/dut/datapath/alumux/d
 add wave -noupdate -radix decimal /mp1_tb/dut/datapath/alumux/f
-add wave -noupdate -radix hexadecimal /mp1_tb/dut/datapath/adj5/in
-add wave -noupdate -radix hexadecimal /mp1_tb/dut/datapath/adj5/out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 5} {529729 ps} 0}
+WaveRestoreCursors {{Cursor 5} {2957565 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 304
 configure wave -valuecolwidth 131
@@ -45,4 +43,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {1600556 ps}
+WaveRestoreZoom {2844557 ps} {3044627 ps}

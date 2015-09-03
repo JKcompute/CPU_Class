@@ -23,8 +23,8 @@ logic ready;
 initial
 begin
     //$readmemh("mp0test.lst", mem);
-	 $readmemh("mp1test.lst", mem);
-	 //$readmemh("memoryFactorial.lst", mem);
+	//$readmemh("mp1test.lst", mem);
+	$readmemh("mp1-cp.lst", mem);
 
 end
 
