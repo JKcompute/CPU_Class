@@ -5,7 +5,7 @@ module ir
     input clk,
     input load,
     input lc3b_word in,
-    output logic instruction5, instruction11,
+    output logic instruction4, instruction5, instruction11,
     output lc3b_opcode opcode,
     output lc3b_reg dest, src1, src2,
     output lc3b_offset11 offset11,
@@ -40,6 +40,7 @@ begin
     imm5 = data[4:0];
     imm4 = data[3:0];
 
+    instruction4 = data[4];
     instruction5 = data[5];
     instruction11 = data[11];
 

@@ -20,13 +20,16 @@ logic load_cc_wire;
 logic load_mar_wire;
 logic load_mdr_wire;
 logic load_regfile_wire;
-logic marmux_sel_wire;
+logic [1:0] marmux_sel_wire;
 logic mdrmux_sel_wire;
+logic destmux_sel_wire;
+logic offsetmux_sel_wire;
 logic [1:0] pcmux_sel_wire;
-logic [1:0] regfilemux_sel_wire;
+logic [2:0] regfilemux_sel_wire;
 logic storemux_sel_wire;
 lc3b_alumux_sel alumux_sel_wire;
 logic branch_enable_wire;
+logic instruction4_wire;
 logic instruction5_wire;
 logic instruction11_wire;
 lc3b_opcode opcode_wire;
@@ -48,14 +51,18 @@ control control
 	.load_cc(load_cc_wire),
 	.marmux_sel(marmux_sel_wire),
 	.mdrmux_sel(mdrmux_sel_wire),
+	.destmux_sel(destmux_sel_wire),
+	.offsetmux_sel(offsetmux_sel_wire),
 	.pcmux_sel(pcmux_sel_wire),
 	.regfilemux_sel(regfilemux_sel_wire),
 	.aluop(aluop_wire),
 	.storemux_sel(storemux_sel_wire),
 	.alumux_sel(alumux_sel_wire),
 	.branch_enable(branch_enable_wire),
+	.instruction4(instruction4_wire),
 	.instruction5(instruction5_wire),
 	.instruction11(instruction11_wire),
+	.mem_byte(mem_address[0]),
 	/* Memory signals */
 	.mem_resp(mem_resp),
 	.mem_read(mem_read),
@@ -72,6 +79,8 @@ datapath datapath
     .alumux_sel(alumux_sel_wire),
     .marmux_sel(marmux_sel_wire),
     .mdrmux_sel(mdrmux_sel_wire),
+    .destmux_sel(destmux_sel_wire),
+   	.offsetmux_sel(offsetmux_sel_wire),
     .regfilemux_sel(regfilemux_sel_wire),
     .load_pc(load_pc_wire),
     .load_cc(load_cc_wire),
@@ -82,6 +91,7 @@ datapath datapath
     .aluop(aluop_wire),
 	.branch_enable(branch_enable_wire),
     .opcode(opcode_wire),
+	.instruction4(instruction4_wire),
 	.instruction5(instruction5_wire),
 	.instruction11(instruction11_wire),
    	/* Memory signals */

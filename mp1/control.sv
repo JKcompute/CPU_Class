@@ -6,6 +6,7 @@ module control
     input clk,
 	// Datapath controls
 	input lc3b_opcode opcode,
+	input logic instruction4,
 	input logic instruction5,
 	input logic instruction11,
 	// Load 
@@ -16,10 +17,12 @@ module control
 	output logic load_regfile,
 	output logic load_cc,
 	// Select
-	output logic marmux_sel,
+	output logic [1:0] marmux_sel,
 	output logic mdrmux_sel,
+	output logic destmux_sel,
+	output logic offsetmux_sel,
 	output logic [1:0] pcmux_sel,
-	output logic [1:0] regfilemux_sel,
+	output logic [2:0] regfilemux_sel,
 	output lc3b_aluop aluop,
 	output logic storemux_sel,
 	output lc3b_alumux_sel alumux_sel,
@@ -28,7 +31,9 @@ module control
 	input mem_resp,
 	output logic mem_read,
 	output logic mem_write,
-	output lc3b_mem_wmask mem_byte_enable
+	output lc3b_mem_wmask mem_byte_enable,
+
+	input mem_byte
 );
 
 // list of states
@@ -43,12 +48,31 @@ s_not,
 s_br,
 s_br_taken,
 s_calc_addr,
+s_calc_addr_sext,
 s_ldr1,
 s_ldr2,
 s_str1,
 s_str2,
 s_jmp,
-s_lea
+s_lea,
+s_jsr,
+s_jsrr,  
+s_lbd1, // mem access
+s_lbd2,
+s_ldi1, // mem access
+s_ldi2, 
+s_ldi3, // mem access
+s_ldi4, 
+s_rti, /// NOT DOING THIS FOR MP1
+s_shf, 
+s_stb1,
+s_stb2, // mem access
+s_sti1, // mem access
+s_sti2,
+s_sti3,
+s_sti4, // mem access
+s_trap,
+s_storepc
 } state, next_state;
 
 always_comb
@@ -62,14 +86,17 @@ begin : state_actions
 	load_cc = 1'b0;
 	pcmux_sel = 2'b00;
 	storemux_sel = 1'b0;
-	alumux_sel = 2'b00;
-	regfilemux_sel = 2'b00;
-	marmux_sel = 1'b0;
+	alumux_sel = 3'b000;
+	regfilemux_sel = 3'b000;
+	marmux_sel = 2'b00;
 	mdrmux_sel = 1'b0;
+	destmux_sel = 1'b0;
+	offsetmux_sel = 1'b0;
 	aluop = alu_add;
 	mem_read = 1'b0;
 	mem_write = 1'b0;
 	mem_byte_enable = 2'b11;
+
 	
 	/* Actions for each state */
 	case(state)
@@ -103,7 +130,7 @@ begin : state_actions
 			load_regfile = 1;
 			load_cc = 1;
 			// this takes care of immidiate add.
-			alumux_sel = {1'b0, instruction5};
+			alumux_sel = {2'b00, instruction5};
 		end
 
 		s_and: begin
@@ -113,7 +140,7 @@ begin : state_actions
 			load_regfile = 1;
 			load_cc = 1;
 			// this takes care of immidiate and.
-			alumux_sel = {1'b0, instruction5};
+			alumux_sel = {2'b00, instruction5};
 
 		end
 
@@ -135,9 +162,17 @@ begin : state_actions
 		end
 		
 		s_calc_addr: begin
-			/* MAR <= + SEXT(IR[5:0] << 1) */
-			alumux_sel = 2'b10;
+			/* MAR <= base + SEXT(IR[5:0] << 1) */
+			alumux_sel = 2;
 			aluop = alu_add;
+			load_mar = 1;
+		end
+
+		s_calc_addr_sext: begin
+			// set up address before mem read
+			alumux_sel = 4;
+			aluop = alu_add;
+			marmux_sel = 0;
 			load_mar = 1;
 		end
 
@@ -174,9 +209,121 @@ begin : state_actions
 			load_pc = 1;
 		end
 		s_lea: begin
-			regfilemux_sel = 2'b10;
+			regfilemux_sel = 2;
 			load_regfile = 1;
 		end
+		s_storepc: begin 
+			destmux_sel = 1;
+			load_regfile = 1;
+			regfilemux_sel = 3;
+		end 
+		s_jsr: begin
+			load_pc = 1;
+			offsetmux_sel = 1;
+			pcmux_sel = 1;
+		end
+
+		s_lbd1: begin
+			// read from mem
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+			// figure this out, need if else based on MAR[0] value
+			if (mem_byte == 0)
+				regfilemux_sel = 4;
+				//mem_byte_enable = 2'b01;
+			else
+				regfilemux_sel = 5;
+				//mem_byte_enable = 2'b10;
+		end
+		s_lbd2: begin
+			// place data into register
+			regfilemux_sel = 1;
+			destmux_sel = 0;
+			load_cc = 1;
+		end
+
+		s_ldi1:begin
+			// MDR <== M[MAR]
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+		end
+		s_ldi2:begin
+			// MAR <== MDR
+			marmux_sel = 2;
+			load_mar = 1;
+		end
+		s_ldi3:begin
+			// MDR <== M[MAR]
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+		end
+		s_ldi4:begin
+			// MDR -> DR, setCC
+			load_regfile = 1;
+			regfilemux_sel = 1;
+			load_cc = 1;
+		end
+
+		s_ldr1: begin
+			// MDR <== M[MAR]
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+		end
+		s_ldr2: begin
+			// MDR -> DR, setCC
+			load_regfile = 1;
+			regfilemux_sel = 1;
+			load_cc = 1;
+		end
+
+		s_stb1: begin 
+			mem_byte_enable = 2'b01;
+			aluop = alu_pass;
+			mdrmux_sel = 0;
+			load_mdr = 1;
+		end
+		s_stb2: begin 
+			mem_byte_enable = 2'b01;
+			mem_write = 1;
+		end
+
+
+		s_sti1:begin
+			// MDR <== M[MAR]
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+		end
+		s_sti2:begin
+			// MAR <== MDR
+			marmux_sel = 2;
+			load_mar = 1;
+		end
+		s_sti3:begin
+			// MDR <== SR
+			mdrmux_sel = 1; 
+			load_mdr = 1;
+			aluop = alu_pass;
+		end
+		s_sti4:begin
+			// M[MAR] <== MDR = SR
+			mem_write = 1;
+		end
+
+		s_shf: begin
+			// 
+			if(instruction4 == 0)
+				aluop = alu_sll;
+			else // if (instruction4 == 1)
+			begin
+				if(instruction5 == 0)
+					aluop = alu_srr;
+				else // if instruction5 = 1)
+					aluop = alu_srl;
+			end
+			
+		end
+
+
 		default: /* Do nothing */;
 	endcase
 end
@@ -219,13 +366,13 @@ begin : next_state_logic
 					next_state <= s_jmp;
 			    end   /* also RET */
 			    op_jsr  :begin
-					next_state <= s_and;
+					next_state <= s_jsr;
 			    end   /* also JSRR */
 			    op_ldb  :begin
-					next_state <= s_and;
+					next_state <= s_calc_addr_sext;
 			    end
 			    op_ldi  :begin
-					next_state <= s_and;
+					next_state <= s_calc_addr;
 			    end
 			    op_ldr  :begin
 					next_state <= s_calc_addr;
@@ -237,22 +384,22 @@ begin : next_state_logic
 					next_state <= s_not;
 			    end
 			    op_rti  :begin
-					next_state <= s_and;
+					next_state <= decode; //not doing this today
 			    end
 			    op_shf  :begin
-					next_state <= s_and;
+					next_state <= decode; 
 			    end
 			    op_stb  :begin
-					next_state <= s_and;
+					next_state <= s_calc_addr_sext;
 			    end
 			    op_sti  :begin
-					next_state <= s_and;
+					next_state <= s_calc_addr;
 			    end
 			    op_str  :begin
 					next_state <= s_calc_addr;
 			    end
 			    op_trap :begin
-					next_state <= s_and;
+					next_state <= decode;
 			    end
 				default: next_state <= fetch1; 
 				// TODO, is this a safe defaul case?
@@ -270,20 +417,12 @@ begin : next_state_logic
 			next_state = fetch1;
 		end
 
-		s_calc_addr: begin
-			if(opcode == op_ldr)
-				next_state = s_ldr1;
-			else
-				next_state = s_str1;
-		end
-
 		s_ldr1: begin
 			if(mem_resp == 0)
 				next_state = s_ldr1;
 			else
 				next_state = s_ldr2;
 		end
-
 		s_ldr2: begin
 			next_state = fetch1;
 		end
@@ -291,7 +430,6 @@ begin : next_state_logic
 		s_str1: begin
 			next_state = s_str2;
 		end
-
 		s_str2: begin
 			if(mem_resp == 0)
 				next_state = s_str2;
@@ -305,7 +443,6 @@ begin : next_state_logic
 			else
 				next_state = s_br_taken;
 		end	
-		
 		s_br_taken: begin
 			next_state = fetch1;
 		end
@@ -317,8 +454,109 @@ begin : next_state_logic
 		s_lea: begin
 			next_state = fetch1;
 		end
-			
-		
+
+		s_storepc: begin
+			if(opcode == op_jsr && instruction11 == 0) //jsrr
+				next_state = s_jmp;
+			else if (opcode == op_jsr && instruction11 == 0) //jsr
+				next_state = s_jsr;
+			else
+				next_state = s_trap;
+		end
+
+		s_jsr: begin 
+			next_state = fetch1;
+		end
+
+		s_ldb1: begin 
+			if(mem_resp == 0)
+				next_state = s_ldb1;
+			else
+				next_state = s_ldb2;
+		end
+		s_ldb2: begin 
+			next_state = fetch1;
+		end
+
+		s_ldi1: begin 
+			if(mem_resp == 0)
+				next_state = s_ldi1;
+			else
+				next_state = s_ldi2;
+		end
+		s_ldi2: begin 
+			next_state = s_ldi3;
+		end
+		s_ldi3: begin 
+			if(mem_resp == 0)
+				next_state = s_ldi3;
+			else
+				next_state = s_ldi4;
+		end
+		s_ldi4: begin 
+			next_state = fetch1;
+		end
+
+
+		s_ldr1: begin
+			if(mem_resp == 0)
+				next_state = s_ldr1;
+			else
+				next_state = s_ldr2;
+		end
+		s_ldr2: begin
+			next_state = fetch1;
+		end
+
+		// start of a lot of functions. 
+		s_calc_addr: begin
+			if(opcode == op_ldr)
+				next_state = s_ldr1;
+			else if(opcode == op_str)
+				next_state = s_str1;
+			else if(opcode == op_ldi)
+				next_state = s_ldi1;
+			else //if ( opcode == op_lea)
+				next_state = s_lea1;
+		end
+
+		s_calc_addr_sext: begin 
+			if(opcode == op_ldb)
+				next_state = s_ldb1;
+			else //if (opcode = op_stb)
+				next_state = s_stb1;
+		end
+
+		s_stb1: begin 
+			next_state = s_stb2;
+		end
+		s_stb2: begin 
+			if(mem_resp == 0)
+				next_state = s_stb2;
+			else
+				next_state = fetch1;
+		end
+
+		s_sti1: begin 
+			if(mem_resp == 0)
+				next_state = s_sti1;
+			else
+				next_state = s_sti2;
+		end
+		s_sti2: begin 
+			next_state = s_sti3;
+		end
+		s_sti3: begin 
+
+				next_state = s_sti4;
+		end
+		s_sti4: begin 
+			if(mem_resp == 0)
+				next_state = s_sti4;
+			else
+				next_state = fetch1;
+		end
+
 		default: next_state = fetch1;
 	endcase
 

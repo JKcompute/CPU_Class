@@ -7,10 +7,12 @@ module datapath
     /* control signals */
     input [1:0] pcmux_sel,
 	input storemux_sel,
-    input [1:0] alumux_sel,
-    input marmux_sel,
+    input [2:0] alumux_sel,
+    input [1:0] marmux_sel,
     input mdrmux_sel,
-    input [1:0] regfilemux_sel,
+    input destmux_sel,
+    input offsetmux_sel,
+    input [2:0] regfilemux_sel,
 
     input load_pc,
     input load_cc,
@@ -20,12 +22,9 @@ module datapath
     input load_regfile,
 
     input lc3b_aluop aluop,
-
-    /* declare more ports here */
     input lc3b_word mem_rdata,
-
-    //output [3:0] opcode,
     output lc3b_opcode opcode,
+    output logic instruction4,
     output logic instruction5,
     output logic instruction11,
 
@@ -41,6 +40,7 @@ lc3b_word pcmux_out;
 lc3b_word alumux_out;
 lc3b_word marmux_out;
 lc3b_word mdrmux_out;
+lc3b_word destmux_out;
 lc3b_word regfilemux_out;
 lc3b_word pc_out;
 lc3b_word br_add_out;
@@ -51,6 +51,7 @@ lc3b_word regfile_sr2_out;
 lc3b_word adj11_out;
 lc3b_word adj9_out;
 lc3b_word adj6_out;
+lc3b_word offsetmux_out;
 lc3b_word sext5_out;
 lc3b_word imm4_out;
 
@@ -97,7 +98,7 @@ plus2 plus2
 
 adder bradder 
 (
-    .a(adj9_out),
+    .a(offsetmux_out),
     .b(pc_out),
     .result(br_add_out)
 );
@@ -105,11 +106,13 @@ adder bradder
 /*
  * MAR
  */
-mux2 marmux
+mux4 marmux
 (
     .sel(marmux_sel),
     .a(alu_out),
     .b(pc_out),
+    .c(mem_wdata),
+    .d(),
     .f(marmux_out)
 );
 
@@ -151,14 +154,18 @@ mux2 #(.width(3)) storemux
 	.f(storemux_out)
 );
 
-mux4 regfilemux
+mux8 regfilemux
 (
     .sel(regfilemux_sel),
     .a(alu_out),
     .b(mem_wdata),
     .c(br_add_out),
-    .d(),
-    .f(regfilemux_out)
+    .d(pc_out),
+    .e({4'b0, mem_wdata[7:0]}),
+    .f({4'b0, mem_wdata[15:8]}),
+    .g(),
+    .h(),
+    .out(regfilemux_out)
 );
 
 regfile regfile 
@@ -168,9 +175,17 @@ regfile regfile
     .in(regfilemux_out), 
     .src_a(storemux_out), 
     .src_b(ir_sr2_out),
-    .dest(ir_dest_out),
+    .dest(destmux_out),
     .reg_a(regfile_sr1_out),
     .reg_b(regfile_sr2_out)
+);
+
+mux2 #(.width(3)) destmux
+(
+    .sel(destmux_sel),
+    .a(ir_dest_out),
+    .b(3'b111),
+    .f(destmux_out)
 );
 
 /*
@@ -208,14 +223,18 @@ alu alu
     .f(alu_out)
 );
 
-mux4 alumux 
+mux8 alumux 
 (
     .sel(alumux_sel),
     .a(regfile_sr2_out),
     .b(sext5_out),
     .c(adj6_out),
     .d({12'b0, ir_imm4_out}),
-    .f(alumux_out)
+    .e(sext6_out), 
+    .f(),
+    .g(),
+    .h(),
+    .out(alumux_out)
 );
 
 /*
@@ -227,6 +246,7 @@ ir ir
     .load(load_ir),
     .in(mem_wdata),
     .opcode(opcode),
+    .instruction4(instruction4),
     .instruction5(instruction5),
     .instruction11(instruction11),
     .dest(ir_dest_out),
@@ -237,6 +257,14 @@ ir ir
     .offset6(ir_offset6_out),
     .imm5(ir_imm5_out),
     .imm4(ir_imm4_out)
+);
+
+mux2 offsetmux
+(
+    .sel(offsetmux_sel),
+    .a(adj9_out),
+    .b(adj11_out),
+    .f(offsetmux_out)
 );
 
 adj #(.width(11)) adj11
@@ -262,6 +290,12 @@ sext #(.width(5)) sext5
 (
     .in(ir_imm5_out),
     .out(sext5_out)
+);
+
+sext #(.width(5)) sext6
+(
+    .in(ir_offset6_out),
+    .out(sext6_out)
 );
 
 endmodule : datapath
