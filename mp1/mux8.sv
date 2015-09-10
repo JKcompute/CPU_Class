@@ -2,7 +2,7 @@
 
 module mux8 #(parameter width = 16)
 (
-	input [1:0] sel,
+	input [2:0] sel,
 	input [width-1:0] a, b, c, d, e, f, g, h,
 	output logic [width-1:0] out
 );

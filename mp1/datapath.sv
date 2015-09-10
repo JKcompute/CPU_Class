@@ -40,7 +40,7 @@ lc3b_word pcmux_out;
 lc3b_word alumux_out;
 lc3b_word marmux_out;
 lc3b_word mdrmux_out;
-lc3b_word destmux_out;
+lc3b_reg destmux_out;
 lc3b_word regfilemux_out;
 lc3b_word pc_out;
 lc3b_word br_add_out;
@@ -49,11 +49,16 @@ lc3b_word alu_out;
 lc3b_word regfile_sr1_out;
 lc3b_word regfile_sr2_out;
 lc3b_word adj11_out;
+lc3b_word adjzext8_out;
 lc3b_word adj9_out;
 lc3b_word adj6_out;
 lc3b_word offsetmux_out;
+lc3b_word sext6_out;
 lc3b_word sext5_out;
+lc3b_word zext4_out;
 lc3b_word imm4_out;
+lc3b_word zextupper_out;
+lc3b_word zextlower_out;
 
 lc3b_reg ir_sr1_out;
 lc3b_reg ir_sr2_out;
@@ -65,6 +70,7 @@ lc3b_nzp gencc_out;
 
 lc3b_offset11 ir_offset11_out;
 lc3b_offset9 ir_offset9_out;
+lc3b_offset8 ir_offset8_out;
 lc3b_offset6 ir_offset6_out;
 lc3b_imm5 ir_imm5_out;
 lc3b_imm4 ir_imm4_out;
@@ -112,7 +118,7 @@ mux4 marmux
     .a(alu_out),
     .b(pc_out),
     .c(mem_wdata),
-    .d(),
+    .d(adjzext8_out),
     .f(marmux_out)
 );
 
@@ -161,8 +167,8 @@ mux8 regfilemux
     .b(mem_wdata),
     .c(br_add_out),
     .d(pc_out),
-    .e({4'b0, mem_wdata[7:0]}),
-    .f({4'b0, mem_wdata[15:8]}),
+    .e(zextlower_out),
+    .f(zextupper_out),
     .g(),
     .h(),
     .out(regfilemux_out)
@@ -229,7 +235,7 @@ mux8 alumux
     .a(regfile_sr2_out),
     .b(sext5_out),
     .c(adj6_out),
-    .d({12'b0, ir_imm4_out}),
+    .d(zext4_out),
     .e(sext6_out), 
     .f(),
     .g(),
@@ -254,6 +260,7 @@ ir ir
     .src2(ir_sr2_out),
     .offset11(ir_offset11_out),
     .offset9(ir_offset9_out),
+    .offset8(ir_offset8_out),
     .offset6(ir_offset6_out),
     .imm5(ir_imm5_out),
     .imm4(ir_imm4_out)
@@ -292,10 +299,35 @@ sext #(.width(5)) sext5
     .out(sext5_out)
 );
 
-sext #(.width(5)) sext6
+sext #(.width(6)) sext6
 (
     .in(ir_offset6_out),
     .out(sext6_out)
+);
+
+//Zext
+adjzext #(.width(8)) trapvect8
+(
+    .in(ir_offset8_out),
+    .out(adjzext8_out)
+);
+
+zext #(.width(4)) zext4
+(
+    .in(ir_imm4_out),
+    .out(zext4_out)
+);
+
+zext #(.width(8)) zextlower
+(
+    .in(mem_wdata[7:0]),
+    .out(zextlower_out)
+);
+
+zext #(.width(8)) zextupper
+(
+    .in(mem_wdata[15:8]),
+    .out(zextupper_out)
 );
 
 endmodule : datapath

@@ -57,8 +57,8 @@ s_jmp,
 s_lea,
 s_jsr,
 s_jsrr,  
-s_lbd1, // mem access
-s_lbd2,
+s_ldb1, // mem access
+s_ldb2,
 s_ldi1, // mem access
 s_ldi2, 
 s_ldi3, // mem access
@@ -71,7 +71,9 @@ s_sti1, // mem access
 s_sti2,
 s_sti3,
 s_sti4, // mem access
-s_trap,
+s_trap1,
+s_trap2,
+s_trap3,
 s_storepc
 } state, next_state;
 
@@ -223,7 +225,7 @@ begin : state_actions
 			pcmux_sel = 1;
 		end
 
-		s_lbd1: begin
+		s_ldb1: begin
 			// read from mem
 			mdrmux_sel = 1; 
 			load_mdr = 1;
@@ -234,10 +236,12 @@ begin : state_actions
 			else
 				regfilemux_sel = 5;
 				//mem_byte_enable = 2'b10;
+			mem_read = 1;
 		end
-		s_lbd2: begin
+		s_ldb2: begin
 			// place data into register
 			regfilemux_sel = 1;
+			load_regfile = 1;
 			destmux_sel = 0;
 			load_cc = 1;
 		end
@@ -246,6 +250,7 @@ begin : state_actions
 			// MDR <== M[MAR]
 			mdrmux_sel = 1; 
 			load_mdr = 1;
+			mem_read = 1;
 		end
 		s_ldi2:begin
 			// MAR <== MDR
@@ -256,20 +261,9 @@ begin : state_actions
 			// MDR <== M[MAR]
 			mdrmux_sel = 1; 
 			load_mdr = 1;
+			mem_read = 1;
 		end
 		s_ldi4:begin
-			// MDR -> DR, setCC
-			load_regfile = 1;
-			regfilemux_sel = 1;
-			load_cc = 1;
-		end
-
-		s_ldr1: begin
-			// MDR <== M[MAR]
-			mdrmux_sel = 1; 
-			load_mdr = 1;
-		end
-		s_ldr2: begin
 			// MDR -> DR, setCC
 			load_regfile = 1;
 			regfilemux_sel = 1;
@@ -292,6 +286,7 @@ begin : state_actions
 			// MDR <== M[MAR]
 			mdrmux_sel = 1; 
 			load_mdr = 1;
+			mem_read = 1;
 		end
 		s_sti2:begin
 			// MAR <== MDR
@@ -311,16 +306,32 @@ begin : state_actions
 
 		s_shf: begin
 			// 
-			if(instruction4 == 0)
+			if(instruction4 == 0) // d bit
 				aluop = alu_sll;
 			else // if (instruction4 == 1)
 			begin
-				if(instruction5 == 0)
-					aluop = alu_srr;
+				if(instruction5 == 0) // a bit
+					aluop = alu_sra;
 				else // if instruction5 = 1)
 					aluop = alu_srl;
 			end
-			
+			alumux_sel = 3;
+			regfilemux_sel = 1;
+			load_regfile = 1;
+		end
+
+		s_trap1: begin
+			marmux_sel = 3; 
+			load_mar =1; 
+		end
+		s_trap2: begin 
+			load_mdr = 1;
+			mem_read = 1;
+			mdrmux_sel = 1;
+		end
+		s_trap3: begin
+			pcmux_sel = 3; 
+			load_pc = 1;
 		end
 
 
@@ -399,7 +410,7 @@ begin : next_state_logic
 					next_state <= s_calc_addr;
 			    end
 			    op_trap :begin
-					next_state <= decode;
+					next_state <= s_storepc;
 			    end
 				default: next_state <= fetch1; 
 				// TODO, is this a safe defaul case?
@@ -460,8 +471,8 @@ begin : next_state_logic
 				next_state = s_jmp;
 			else if (opcode == op_jsr && instruction11 == 0) //jsr
 				next_state = s_jsr;
-			else
-				next_state = s_trap;
+			else // if (opcode == op_trap)
+				next_state = s_trap1;
 		end
 
 		s_jsr: begin 
@@ -497,17 +508,6 @@ begin : next_state_logic
 			next_state = fetch1;
 		end
 
-
-		s_ldr1: begin
-			if(mem_resp == 0)
-				next_state = s_ldr1;
-			else
-				next_state = s_ldr2;
-		end
-		s_ldr2: begin
-			next_state = fetch1;
-		end
-
 		// start of a lot of functions. 
 		s_calc_addr: begin
 			if(opcode == op_ldr)
@@ -516,8 +516,8 @@ begin : next_state_logic
 				next_state = s_str1;
 			else if(opcode == op_ldi)
 				next_state = s_ldi1;
-			else //if ( opcode == op_lea)
-				next_state = s_lea1;
+			else //if ( opcode == op_ltr)
+				next_state = s_str1;
 		end
 
 		s_calc_addr_sext: begin 
@@ -556,6 +556,24 @@ begin : next_state_logic
 			else
 				next_state = fetch1;
 		end
+
+		s_shf: begin
+			next_state = fetch1;
+		end
+
+		s_trap1: begin
+			next_state = s_trap2;
+		end
+		s_trap2: begin 
+			if(mem_resp == 0)
+				next_state = s_trap2;
+			else
+				next_state = s_trap3;
+		end
+		s_trap3: begin
+			next_state = fetch1;
+		end
+
 
 		default: next_state = fetch1;
 	endcase
