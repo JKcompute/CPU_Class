@@ -1,4 +1,4 @@
-import lc3b_types::*;
+ import lc3b_types::*;
 
 module datapath
 (
@@ -10,7 +10,6 @@ module datapath
     input [2:0] alumux_sel,
     input [1:0] marmux_sel,
     input mdrmux_sel,
-    input destmux_sel,
     input offsetmux_sel,
     input [2:0] regfilemux_sel,
 
@@ -40,7 +39,6 @@ lc3b_word pcmux_out;
 lc3b_word alumux_out;
 lc3b_word marmux_out;
 lc3b_word mdrmux_out;
-lc3b_reg destmux_out;
 lc3b_word regfilemux_out;
 lc3b_word pc_out;
 lc3b_word br_add_out;
@@ -84,7 +82,7 @@ mux4 pcmux
     .a(pc_plus2_out),
     .b(br_add_out),
     .c(regfile_sr1_out),
-    .d(),
+    .d(adjzext8_out),
     .f(pcmux_out)
 );
 
@@ -181,17 +179,9 @@ regfile regfile
     .in(regfilemux_out), 
     .src_a(storemux_out), 
     .src_b(ir_sr2_out),
-    .dest(destmux_out),
+    .dest(ir_dest_out),
     .reg_a(regfile_sr1_out),
     .reg_b(regfile_sr2_out)
-);
-
-mux2 #(.width(3)) destmux
-(
-    .sel(destmux_sel),
-    .a(ir_dest_out),
-    .b(3'b111),
-    .f(destmux_out)
 );
 
 /*

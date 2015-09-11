@@ -19,7 +19,6 @@ module control
 	// Select
 	output logic [1:0] marmux_sel,
 	output logic mdrmux_sel,
-	output logic destmux_sel,
 	output logic offsetmux_sel,
 	output logic [1:0] pcmux_sel,
 	output logic [2:0] regfilemux_sel,
@@ -92,7 +91,6 @@ begin : state_actions
 	regfilemux_sel = 3'b000;
 	marmux_sel = 2'b00;
 	mdrmux_sel = 1'b0;
-	destmux_sel = 1'b0;
 	offsetmux_sel = 1'b0;
 	aluop = alu_add;
 	mem_read = 1'b0;
@@ -215,7 +213,6 @@ begin : state_actions
 			load_regfile = 1;
 		end
 		s_storepc: begin 
-			destmux_sel = 1;
 			load_regfile = 1;
 			regfilemux_sel = 3;
 		end 
@@ -227,8 +224,11 @@ begin : state_actions
 
 		s_ldb1: begin
 			// read from mem
-			mdrmux_sel = 1; 
 			load_mdr = 1;
+			mdrmux_sel = 1; 
+			mem_read = 1;
+		end
+		s_ldb2: begin
 			// figure this out, need if else based on MAR[0] value
 			if (mem_byte == 0)
 				regfilemux_sel = 4;
@@ -236,13 +236,8 @@ begin : state_actions
 			else
 				regfilemux_sel = 5;
 				//mem_byte_enable = 2'b10;
-			mem_read = 1;
-		end
-		s_ldb2: begin
 			// place data into register
-			regfilemux_sel = 1;
 			load_regfile = 1;
-			destmux_sel = 0;
 			load_cc = 1;
 		end
 
@@ -271,9 +266,9 @@ begin : state_actions
 		end
 
 		s_stb1: begin 
-			mem_byte_enable = 2'b01;
+			//mem_byte_enable = 2'b01;
+			storemux_sel = 1;
 			aluop = alu_pass;
-			mdrmux_sel = 0;
 			load_mdr = 1;
 		end
 		s_stb2: begin 
@@ -295,6 +290,7 @@ begin : state_actions
 		end
 		s_sti3:begin
 			// MDR <== SR
+			storemux_sel = 1;
 			mdrmux_sel = 1; 
 			load_mdr = 1;
 			aluop = alu_pass;
@@ -311,12 +307,12 @@ begin : state_actions
 			else // if (instruction4 == 1)
 			begin
 				if(instruction5 == 0) // a bit
-					aluop = alu_sra;
-				else // if instruction5 = 1)
 					aluop = alu_srl;
+				else // if instruction5 = 1)
+					aluop = alu_sra;
 			end
 			alumux_sel = 3;
-			regfilemux_sel = 1;
+			regfilemux_sel = 0;
 			load_regfile = 1;
 		end
 
@@ -377,7 +373,7 @@ begin : next_state_logic
 					next_state <= s_jmp;
 			    end   /* also RET */
 			    op_jsr  :begin
-					next_state <= s_jsr;
+					next_state <= s_storepc;
 			    end   /* also JSRR */
 			    op_ldb  :begin
 					next_state <= s_calc_addr_sext;
@@ -398,7 +394,7 @@ begin : next_state_logic
 					next_state <= decode; //not doing this today
 			    end
 			    op_shf  :begin
-					next_state <= decode; 
+					next_state <= s_shf; 
 			    end
 			    op_stb  :begin
 					next_state <= s_calc_addr_sext;
@@ -469,7 +465,7 @@ begin : next_state_logic
 		s_storepc: begin
 			if(opcode == op_jsr && instruction11 == 0) //jsrr
 				next_state = s_jmp;
-			else if (opcode == op_jsr && instruction11 == 0) //jsr
+			else if (opcode == op_jsr && instruction11 == 1) //jsr
 				next_state = s_jsr;
 			else // if (opcode == op_trap)
 				next_state = s_trap1;
@@ -516,8 +512,8 @@ begin : next_state_logic
 				next_state = s_str1;
 			else if(opcode == op_ldi)
 				next_state = s_ldi1;
-			else //if ( opcode == op_ltr)
-				next_state = s_str1;
+			else //if ( opcode == op_sti)
+				next_state = s_sti1;
 		end
 
 		s_calc_addr_sext: begin 

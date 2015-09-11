@@ -31,7 +31,11 @@ always_comb
 begin
     opcode = lc3b_opcode'(data[15:12]);
 
-    dest = data[11:9];
+    if ( opcode == op_trap || opcode == op_jsr)
+        dest = 3'b111;
+    else
+        dest = data[11:9];
+
     src1 = data[8:6];
     src2 = data[2:0];
 

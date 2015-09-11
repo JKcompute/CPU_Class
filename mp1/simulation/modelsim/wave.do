@@ -27,9 +27,32 @@ add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alumux/a
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alumux/b
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alumux/c
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alumux/d
-add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alumux/f
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/zextlower/in
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/zextlower/out
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/zextupper/in
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/zextupper/out
+add wave -noupdate -height 15 -radix decimal /mp1_tb/dut/datapath/regfilemux/sel
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/a
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/b
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/c
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/d
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/e
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/f
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/regfilemux/out
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mar/load
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mar/in
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mar/out
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mar/data
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mdr/load
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mdr/in
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mdr/out
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/mdr/data
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/sel
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/a
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/b
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/f
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 5} {9915564 ps} 0}
+WaveRestoreCursors {{Cursor 5} {31035000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 304
 configure wave -valuecolwidth 131
@@ -45,4 +68,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {8584070 ps} {11785190 ps}
+WaveRestoreZoom {30765470 ps} {31320900 ps}
