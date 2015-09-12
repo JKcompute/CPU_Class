@@ -42,7 +42,8 @@ typedef enum bit [3:0] {
     alu_pass,
     alu_sll,
     alu_srl,
-    alu_sra
+    alu_sra,
+    alu_bitcopy
 } lc3b_aluop;
 
 endpackage : lc3b_types

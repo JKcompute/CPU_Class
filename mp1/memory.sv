@@ -25,8 +25,9 @@ begin
     //$readmemh("mp0test.lst", mem);
 	//$readmemh("mp1test.lst", mem);
 	//$readmemh("mp1-cp.lst", mem);
-    $readmemh("mp1-final.lst", mem);
-
+    //$readmemh("mp1-final.lst", mem);
+    $readmemh("mp12-test.lst",mem);
+    //$readmemh("LDBSTBtest.lst",mem);
 end
 
 assign internal_address = {address[15:1], 1'b0};

@@ -17,6 +17,18 @@ add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/control/opcode
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/control/instruction11
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/control/instruction5
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/control/instruction4
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/clk
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/read
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/write
+add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp1_tb/memory/byte_enable[1]} -radix hexadecimal} {{/mp1_tb/memory/byte_enable[0]} -radix hexadecimal}} -subitemconfig {{/mp1_tb/memory/byte_enable[1]} {-height 15 -radix hexadecimal} {/mp1_tb/memory/byte_enable[0]} {-height 15 -radix hexadecimal}} /mp1_tb/memory/byte_enable
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/address
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/wdata
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/resp
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/rdata
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/internal_address
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/ready
+add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/memory/state
+add wave -noupdate -height 15 /mp1_tb/memory/next_state
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/control/alumux_sel
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alu/aluop
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/alu/a
@@ -52,7 +64,7 @@ add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/a
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/b
 add wave -noupdate -height 15 -radix hexadecimal /mp1_tb/dut/datapath/storemux/f
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 5} {31035000 ps} 0}
+WaveRestoreCursors {{Cursor 5} {8673793 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 304
 configure wave -valuecolwidth 131
@@ -68,4 +80,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {30765470 ps} {31320900 ps}
+WaveRestoreZoom {6011558 ps} {9157286 ps}

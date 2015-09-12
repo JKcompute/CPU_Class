@@ -232,10 +232,8 @@ begin : state_actions
 			// figure this out, need if else based on MAR[0] value
 			if (mem_byte == 0)
 				regfilemux_sel = 4;
-				//mem_byte_enable = 2'b01;
 			else
 				regfilemux_sel = 5;
-				//mem_byte_enable = 2'b10;
 			// place data into register
 			load_regfile = 1;
 			load_cc = 1;
@@ -268,11 +266,14 @@ begin : state_actions
 		s_stb1: begin 
 			//mem_byte_enable = 2'b01;
 			storemux_sel = 1;
-			aluop = alu_pass;
+			aluop = alu_bitcopy;
 			load_mdr = 1;
 		end
 		s_stb2: begin 
-			mem_byte_enable = 2'b01;
+			if(mem_byte == 0)
+				mem_byte_enable = 2'b01;
+			else
+				mem_byte_enable = 2'b10;
 			mem_write = 1;
 		end
 
@@ -291,7 +292,6 @@ begin : state_actions
 		s_sti3:begin
 			// MDR <== SR
 			storemux_sel = 1;
-			mdrmux_sel = 1; 
 			load_mdr = 1;
 			aluop = alu_pass;
 		end
