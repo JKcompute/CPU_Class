@@ -51,25 +51,25 @@ LoadStoreTests:
 ;; test trap by going to Condition code tests.
 	TRAP CCTrap
 	LDR R6, R0, BAC 	; You're BACk!
-	ADD R6, R6, 4
+	ADD R6, R6, 4 		; Alter contents of register for tracking
 
 	JSR jsrtest
 	LDR R6, R0, BAC 	; You're BACk!
-	LEA R6, jsrrtest
-	JSRR R6
+	LEA R6, jsrrtest 	; Load the addres of jsrrtest
+	JSRR R6 			; jump to jsrr test.
 	LDR R6, R0, BAC 	; You're BACk!
 
  halt:
- 	BRnzp halt 
+ 	BRnzp halt 			; Spin 
 
 jsrtest:
-	AND R6, R6, 0 		;Clear R6
-	ADD R6, R6, 7
-	RET
+	AND R6, R6, 0 		; Clear R6
+	ADD R6, R6, 7		; Add a 7 just to keep track easier
+	RET 				; 
 
 jsrrtest:
-	AND R6, R6, 0 		;Clear R6
-	ADD R6, R6, 8
+	AND R6, R6, 0 		; Clear R6
+	ADD R6, R6, 8		; Add an 8 just to keep track easier
 	RET
 
 
@@ -99,39 +99,39 @@ CCtests:
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
  OK1:
  	ADD R6, R6, R7		
- 	BRp OK2
+ 	BRp OK2				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
  OK2:
  	AND R6, R6, R6 		; 
-	BRp OK3
+	BRp OK3				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK3:
 	AND R6, R6, 0 		; 
-	BRz OK4
+	BRz OK4				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK4:
 	LDB R6, R0, ABCD 	
-	BRp OK5
+	BRp OK5				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK5:
 	LDI R6, R0, TARGET1 	
-	BRn OK6
+	BRn OK6				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK6:
 	LDR R6, R0, TBCD 	
-	BRp OK7
+	BRp OK7				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK7:
 	LEA R6, COOL      	
-	BRp OK8
+	BRp OK8				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK8:
 	NOT R6, R6      	
-	BRn OK9
+	BRn OK9				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK9:
 	RSHFL R6, R6, 4      	
-	BRp OK10
+	BRp OK10			; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK10:
-	RET
+	RET 				; Return to next instruction after trap
