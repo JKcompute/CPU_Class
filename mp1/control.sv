@@ -314,6 +314,7 @@ begin : state_actions
 			alumux_sel = 3;
 			regfilemux_sel = 0;
 			load_regfile = 1;
+			load_cc = 1;
 		end
 
 		s_trap1: begin
