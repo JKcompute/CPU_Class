@@ -51,9 +51,26 @@ LoadStoreTests:
 ;; test trap by going to Condition code tests.
 	TRAP CCTrap
 	LDR R6, R0, BAC 	; You're BACk!
+	ADD R6, R6, 4
+
+	JSR jsrtest
+	LDR R6, R0, BAC 	; You're BACk!
+	LEA R6, jsrrtest
+	JSRR R6
+	LDR R6, R0, BAC 	; You're BACk!
 
  halt:
  	BRnzp halt 
+
+jsrtest:
+	AND R6, R6, 0 		;Clear R6
+	ADD R6, R6, 7
+	RET
+
+jsrrtest:
+	AND R6, R6, 0 		;Clear R6
+	ADD R6, R6, 8
+	RET
 
 
 SEGMENT 	DataSegment:
