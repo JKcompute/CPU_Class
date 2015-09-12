@@ -1,0 +1,29 @@
+ORIGIN 0
+SEGMENT
+CodeSegment:	; Version 0.12  7/21/2014
+	AND R0, R0, 0
+	AND R1, R0, 0
+	AND R2, R0, 0
+	AND R3, R0, 0
+	AND R4, R0, 0
+	AND R5, R0, 0
+	AND R6, R0, 0
+	AND R7, R0, 0
+	JMP Safe
+	LDR R1, R0, 4x0BAD; we should not load this.  
+
+
+
+Safe:
+	LEA R0, DataSegment
+	LDR R1, R0, ZERO
+	LDR R2, R0, ONETWELVE
+
+
+SEGMENT        DataSegment:
+ZERO:	 DATA2 0
+ONETWELVE:	 DATA2 112
+ENT:	DATA2 10
+NINER:	DATA2 9999
+TARGET
+BAD:  DATA2 4x0BAD
