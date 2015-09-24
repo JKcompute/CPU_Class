@@ -3,43 +3,45 @@ import lc3b_types::*;
 module cache_control
 (
 // /* Input and output port declarations */
-//     input clk,
-// 	// Datapath controls
-// 	input lc3b_opcode opcode,
-// 	input logic instruction4,
-// 	input logic instruction5,
-// 	input logic instruction11,
-// 	// Load 
-// 	output logic load_pc,
-// 	output logic load_ir,
-// 	output logic load_mar,
-// 	output logic load_mdr,
-// 	output logic load_regfile,
-// 	output logic load_cc,
-// 	// Select
-// 	output logic [1:0] marmux_sel,
-// 	output logic mdrmux_sel,
-// 	output logic offsetmux_sel,
-// 	output logic [1:0] pcmux_sel,
-// 	output logic [2:0] regfilemux_sel,
-// 	output lc3b_aluop aluop,
-// 	output logic storemux_sel,
-// 	output lc3b_alumux_sel alumux_sel,
-// 	input logic branch_enable,
-// 	// Memory signals
-// 	input mem_resp,
-// 	output logic mem_read,
-// 	output logic mem_write,
-// 	output lc3b_mem_wmask mem_byte_enable,
+    input clk,
 
-// 	input mem_byte
+	//cpu in outs
+	output logic load_dirty_w1,
+	output logic load_valid_w1,
+	output logic load_tag_w1,
+	output logic load_datastore_w1,
+
+	output logic load_dirty_w2,
+	output logic load_valid_w2,
+	output logic load_tag_w2,
+	output logic load_datastore_w2,
+
+	output logic load_lru,
+	output logic datastore_in_mux_sel,
+	input lru_out,
+
+	// inputs and outputs. 
+	input logic ishit_w1,
+	input logic ishit_w2,
+	input logic isdirty_w1,
+	input logic isdirty_w2,
+
+	// Memory signals
+    output logic mem_resp,
+    input logic mem_read,
+    input logic mem_write,
+
+	input logic pmem_resp,
+	output logic pmem_read,
+	output logic pmem_write
 );
-
 
 // list of states
 enum int unsigned {
-fetch1,
-stateddd
+idle,
+evaluation,
+evacuation,
+load_store
 } state, next_state;
 
 
@@ -47,34 +49,42 @@ stateddd
 always_comb
 begin : state_actions
     /* Default output assignments */	
-	load_pc = 1'b0;
-	load_ir = 1'b0;
-	load_regfile = 1'b0;
-	load_mar = 1'b0;
-	load_mdr = 1'b0;
-	load_cc = 1'b0;
-	pcmux_sel = 2'b00;
-	storemux_sel = 1'b0;
-	alumux_sel = 3'b000;
-	regfilemux_sel = 3'b000;
-	marmux_sel = 2'b00;
-	mdrmux_sel = 1'b0;
-	offsetmux_sel = 1'b0;
-	aluop = alu_add;
-	mem_read = 1'b0;
-	mem_write = 1'b0;
-	mem_byte_enable = 2'b11;
+	load_dirty_w1 = 1'b0;
+	load_valid_w1 = 1'b0;
+	load_tag_w1 = 1'b0;
+	load_datastore_w1 = 1'b0;
+	load_dirty_w2 = 1'b0;
+	load_valid_w2 = 1'b0;
+	load_tag_w2 = 1'b0;
+	load_datastore_w2 = 1'b0;
+	load_lru = 1'b0;
+	datastore_in_mux_sel = 1'b0;
+    mem_resp = 1'b0;
+	pmem_read = 1'b0;
+	pmem_write = 1'b0;
+		// input lru_out,
+	// input logic ishit_w1,
+	// input logic ishit_w2,
+	// input logic isdirty_w1,
+	// input logic isdirty_w2,
+ //    input logic mem_read,
+ //    input logic mem_write,
+	// input logic pmem_resp,
 
 	
 	/* Actions for each state */
 	case(state)
-		fetch1: begin
-			/* MAR <= PC */
-			marmux_sel = 1;
-			load_mar = 1;
-			/* PC <= PC + 2 */
-			pcmux_sel = 0;
-			load_pc = 1;
+		idle: begin
+			//marmux_sel = 1;
+		end
+		evaluation: begin
+			//marmux_sel = 1;
+		end
+		evacuation: begin
+			//marmux_sel = 1;
+		end
+		load_store: begin
+			//marmux_sel = 1;
 		end
 		default: /* Do nothing */;
 	endcase
@@ -86,9 +96,54 @@ begin : next_state_logic
     /* Next state information and conditions (if any)
      * for transitioning between states */
 
+	// input lru_out,
+	// input logic ishit_w1,
+	// input logic ishit_w2,
+	// input logic isdirty_w1,
+	// input logic isdirty_w2,
+ //    input logic mem_read,
+ //    input logic mem_write,
+	// input logic pmem_resp,
+
+
 	case(state)
-		fetch1: begin
-			next_state <= fetch2; 
+		idle: begin
+			if(mem_read==0 && mem_write == 0)
+				next_state <= idle; 
+			else
+				next_state = evaluation;
+		end
+		evaluation: begin
+			// if we miss for both ways
+			if(ishit_w1 == 0 && ishit_w2 == 0) begin
+				//check LRU for one to replace
+				if(lru_out == 0) begin
+					// check if the LRU is dirty
+					if(isdirty_w1 == 1)
+						next_state = evacuation;
+					else
+						next_state = load_store;
+				end
+				else begin 
+					// check if the LRU is dirty
+					if(isdirty_w2 == 1)
+						next_state = evacuation;
+					else
+						next_state = load_store;
+				end
+			end
+			// we have a hit, no need to evacuate
+			else
+				next_state = load_store;
+		end
+		evacuation: begin
+			if(pmem_resp == 0)
+				next_state = evacuation;
+			else
+				next_state = load_store;
+		end
+		load_store: begin
+			next_state <= idle; 
 		end
 	endcase
 

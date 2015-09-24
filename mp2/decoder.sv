@@ -2,7 +2,7 @@ import lc3b_types::*;
 
 module decoder
 (
-    input clk,
+    //input clk,
     input enable,
     input [2:0] binary_in,
     output logic [7:0] decoder_out
