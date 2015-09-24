@@ -62,29 +62,106 @@ begin : state_actions
     mem_resp = 1'b0;
 	pmem_read = 1'b0;
 	pmem_write = 1'b0;
-		// input lru_out,
+	// input lru_out,
 	// input logic ishit_w1,
 	// input logic ishit_w2,
 	// input logic isdirty_w1,
 	// input logic isdirty_w2,
- //    input logic mem_read,
- //    input logic mem_write,
+	// input logic mem_read,
+	// input logic mem_write,
 	// input logic pmem_resp,
 
 	
 	/* Actions for each state */
 	case(state)
 		idle: begin
-			//marmux_sel = 1;
+			// I think we will do nothing in this state //
 		end
 		evaluation: begin
-			//marmux_sel = 1;
+			// I DONT THINK WE NEED TO DO ANYTHING HERE EITHER>  
+			// whether read or write, this state is more about determining the next one.  there is nothing to enable.
 		end
 		evacuation: begin
-			//marmux_sel = 1;
+			// this state is fairly simple.  we will store cache into mem.  
+			pmem_write = 1;
 		end
+
+///////// NOTE:  we might need another state that allows for the pmem to reset to 0 beforemoving to the load_store state
+
 		load_store: begin
-			//marmux_sel = 1;
+			// we are loading
+			if(mem_read == 1) 
+			begin
+				
+				if(ishit_w1 ==1 || ishit_w2 ==1)  // Hit!
+				begin
+					
+					if(ishit_w1 ==1)  // Way 1 Hit!
+					begin
+						////// implement: way1 hit load
+						// send mem_resp = 1;
+						// set lru = 1;
+						////// what we dont need
+						// valid 
+						// dirty
+						// 
+					end
+					else /// Way 2 Hit!
+					begin
+						////// implement: way2 hit load
+						// send mem_resp = 1;
+						// set lru = 0;
+					end
+
+				end
+				else // Miss :(
+				begin
+				
+					if(lru_out == 0)  
+					begin
+						////// implement: way1 miss load (mem read needed)
+					end
+					else //(lru_out == 1)  
+					begin
+						////// implement: way2 miss load (mem read needed)
+					end
+
+				end
+			
+			end
+			
+			// we are storing
+			else //(mem_write ==1 )
+			begin
+			
+				if(ishit_w1 ==1 || ishit_w2 ==1)  // Hit!
+				begin
+					
+					if(ishit_w1 ==1)  // Way 1 Hit!
+					begin
+						////// implement: way1 hit store
+					end
+					else /// Way 2 Hit!
+					begin
+						////// implement: way2 hit store
+					end
+
+				end
+				else // Miss :(
+				begin
+				
+					if(lru_out == 0)  
+					begin
+						////// implement: way1 miss store (mem read needed)
+					end
+					else //(lru_out == 1)  
+					begin
+						////// implement: way2 miss store (mem read needed)
+					end
+
+				end
+			
+			end		
 		end
 		default: /* Do nothing */;
 	endcase
@@ -101,8 +178,8 @@ begin : next_state_logic
 	// input logic ishit_w2,
 	// input logic isdirty_w1,
 	// input logic isdirty_w2,
- //    input logic mem_read,
- //    input logic mem_write,
+	// input logic mem_read,
+	// input logic mem_write,
 	// input logic pmem_resp,
 
 

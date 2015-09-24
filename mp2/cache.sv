@@ -36,6 +36,7 @@ logic isdirty_w1_wire;
 logic isdirty_w2_wire;
 logic lru_out_wire;
 
+assign pmem_address = mem_address;
 
 cache_datapath cache_datapath
 (

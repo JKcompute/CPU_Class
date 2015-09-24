@@ -193,13 +193,13 @@ mux8 #(.width(16)) datastore_out_mux_w2
 	.out(datastore_out_mux_w2_out)
 );
 
-mux2 #(.width(16)) datastore_in_mux_w2
-(
-	.a(datastore_array_w2_out),
-	.b(pmem_rdata), //input from pMEM
-	.sel(datastore_in_mux_w2_sel),
-	.f(datastore_in_mux_w2_out)
-);
+// mux2 #(.width(16)) datastore_in_mux_w2
+// (
+// 	.a(datastore_array_w2_out),
+// 	.b(pmem_rdata), //input from pMEM
+// 	.sel(datastore_in_mux_w2_sel),
+// 	.f(datastore_in_mux_w2_out)
+// );
 
 dirty_hit dirty_hit_w2
 (
