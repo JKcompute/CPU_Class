@@ -18,6 +18,7 @@ module cache_datapath
 	output logic lru_out,
 
 	input datastore_in_mux_sel,
+	input [1:0] pmem_address_mux_sel,
 
 	input [8:0] tag,
 	input [2:0] set,
@@ -32,8 +33,10 @@ module cache_datapath
 	input [127:0] pmem_rdata,
 	output logic [15:0] mem_rdata,
 	output logic [127:0] pmem_wdata,
-	input [15:0] mem_wdata
-
+	input [15:0] mem_wdata,
+	input [15:0] mem_address,
+	output [15:0] pmem_address_mux_out,
+	input [1:0] mem_byte_enable 
 );
 
 // internal signals
@@ -44,10 +47,8 @@ logic lru_w1_out;
 logic [127:0] datastore_array_w1_out;
 logic [127:0] data_way_mux_128_out;
 logic [15:0] datastore_out_mux_w1_out;
-logic tag_array_w1_out;
+logic [8:0] tag_array_w1_out;
 logic [127:0] datastore_parser_out;
-logic dirty_hit_w1_hit;
-logic dirty_hit_w1_dirty;
 
 logic dirty_compare_w2_out;
 logic dirty_array_w2_out;
@@ -55,16 +56,15 @@ logic valid_array_w2_out;
 logic lru_w2_out;
 logic [127:0] datastore_array_w2_out;
 logic [15:0] datastore_out_mux_w2_out;
-logic tag_array_w2_out;
-logic dirty_hit_w2_hit;
-logic dirty_hit_w2_dirty;
+logic [8:0] tag_array_w2_out;
+logic [127:0] datastore_in_mux_out;
 
 // block assignments. 
 
 ///////////////
 // way 1 blocks 
 ///////////////
-comparator dirty_compare_w1
+comparator #(.width(16)) dirty_compare_w1
 (
 	.a (mem_rdata),
 	.b (datastore_out_mux_w1_out),
@@ -109,7 +109,7 @@ array #(.width(128)) datastore_array_w1
 
 mux8 #(.width(16)) datastore_out_mux_w1
 (
-	.sel(offset),
+	.sel(offset[3:1]),
 	.a(datastore_array_w1_out[15:0]),
 	.b(datastore_array_w1_out[31:16]), 
 	.c(datastore_array_w1_out[47:32]), 
@@ -127,8 +127,8 @@ dirty_hit dirty_hit_w1
 	.waytag(tag_array_w1_out),
 	.valid_in(valid_array_w1_out),
 	.dirty_in(dirty_array_w1_out),
-	.hit_out(dirty_hit_w1_hit),
-	.dirty_out(dirty_hit_w1_dirty)
+	.hit_out(ishit_w1),
+	.dirty_out(isdirty_w1)
 ); 
 ///////////////
 // end of way 1
@@ -136,7 +136,7 @@ dirty_hit dirty_hit_w1
 ///////////////
 // way 2 blocks 
 ///////////////
-comparator dirty_compare_w2
+comparator #(.width(16)) dirty_compare_w2
 (
 	.a (mem_rdata),
 	.b (datastore_out_mux_w2_out),
@@ -175,13 +175,13 @@ array #(.width(128)) datastore_array_w2
 	.clk,
 	.write(load_datastore_w2),
 	.index(set), 
-	.datain(datastore_parser_w2_out),
+	.datain(datastore_in_mux_out),
 	.dataout(datastore_array_w2_out)
 );
 
 mux8 #(.width(16)) datastore_out_mux_w2
 (
-	.sel(offset),
+	.sel(offset[3:1]),
 	.a(datastore_array_w1_out[15:0]),
 	.b(datastore_array_w1_out[31:16]), 
 	.c(datastore_array_w1_out[47:32]), 
@@ -193,13 +193,6 @@ mux8 #(.width(16)) datastore_out_mux_w2
 	.out(datastore_out_mux_w2_out)
 );
 
-// mux2 #(.width(16)) datastore_in_mux_w2
-// (
-// 	.a(datastore_array_w2_out),
-// 	.b(pmem_rdata), //input from pMEM
-// 	.sel(datastore_in_mux_w2_sel),
-// 	.f(datastore_in_mux_w2_out)
-// );
 
 dirty_hit dirty_hit_w2
 (
@@ -207,8 +200,8 @@ dirty_hit dirty_hit_w2
 	.waytag(tag_array_w2_out),
 	.valid_in(valid_array_w2_out),
 	.dirty_in(dirty_array_w2_out),
-	.hit_out(dirty_hit_w2_hit),
-	.dirty_out(dirty_hit_w2_dirty)
+	.hit_out(ishit_w2),
+	.dirty_out(isdirty_w2)
 ); 
 
 ///////////////
@@ -223,13 +216,13 @@ assign pmem_wdata = data_way_mux_128_out;
 
 mux2 data_way_mux_16
 (
-	.sel(dirty_hit_w2_hit),
+	.sel(ishit_w2),
 	.a(datastore_out_mux_w1_out),
 	.b(datastore_out_mux_w2_out),
-	.f(mem_wdata)
+	.f(mem_rdata)
 );
 
-mux2 data_way_mux_128
+mux2 #(.width(128)) data_way_mux_128
 (
 	.sel(lru_out),
 	.a(datastore_array_w1_out),
@@ -237,7 +230,7 @@ mux2 data_way_mux_128
 	.f(data_way_mux_128_out)
 );
 
-array lru
+array #(.width(1)) lru
 (
 	.clk,
 	.write(load_lru),
@@ -246,18 +239,40 @@ array lru
 	.dataout(lru_out)
 );
 
-mux2 #(.width(16)) datastore_in_mux
+mux2 #(.width(128)) datastore_in_mux
 (
 	.a(datastore_parser_out),
 	.b(data_way_mux_128_out), //input from pMEM
 	.sel(datastore_in_mux_sel),
-	.f(datastore_in_mux_out),
+	.f(datastore_in_mux_out)
+);
+
+mux4 #(.width(16)) pmem_address_mux
+(
+	.a({tag_array_w1_out, set, 4'b0}), // way 1
+	.b({tag_array_w2_out, set, 4'b0}), // way 2
+
+	.c(mem_address), // cpu
+	.d(mem_address), // cpu
+	// 00: evacuating way 1
+	// 01: evacuating way 2
+	// 10: loading from pmem
+	// 11: loading from pmem
+
+
+	// load DS high means we are reading from mem and want the 
+	// CPU address, 
+	// Otherwise we are storing into pmem and want the address
+	// to be built from the way
+	//.sel({(load_datastore_w1 ||load_datastore_w2) ,lru_out}),
+	.sel(pmem_address_mux_sel),
+	.f(pmem_address_mux_out)
 );
 
 datastore_parser datastore_parser
 (
 	.datain(data_way_mux_128_out),
-	.writedata(mem_rdata),
+	.writedata(mem_wdata),
 	.mem_byte_enable(mem_byte_enable),
 	.offset(offset), 
 	.dataout(datastore_parser_out)

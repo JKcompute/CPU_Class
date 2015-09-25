@@ -18,6 +18,7 @@ module cache_control
 
 	output logic load_lru,
 	output logic datastore_in_mux_sel,
+	output logic [1:0] pmem_address_mux_sel,
 	input lru_out,
 
 	// inputs and outputs. 
@@ -62,6 +63,7 @@ begin : state_actions
     mem_resp = 1'b0;
 	pmem_read = 1'b0;
 	pmem_write = 1'b0;
+	pmem_address_mux_sel = 0;
 	// input lru_out,
 	// input logic ishit_w1,
 	// input logic ishit_w2,
@@ -84,6 +86,17 @@ begin : state_actions
 		evacuation: begin
 			// this state is fairly simple.  we will store cache into mem.  
 			pmem_write = 1;
+
+			if(lru_out == 0)  // we will evacuate way 1
+			begin
+				pmem_address_mux_sel = 0;
+			end
+			else //(lru_out == 1)  
+			begin
+				pmem_address_mux_sel = 1;
+			end
+
+
 		end
 
 ///////// NOTE:  we might need another state that allows for the pmem to reset to 0 beforemoving to the load_store state
@@ -93,70 +106,153 @@ begin : state_actions
 			if(mem_read == 1) 
 			begin
 				
-				if(ishit_w1 ==1 || ishit_w2 ==1)  // Hit!
+				if(ishit_w1 ==1 || ishit_w2 ==1)  // Read:Hit!
 				begin
-					
+
+					// looks like these will both behave the same.  
 					if(ishit_w1 ==1)  // Way 1 Hit!
 					begin
 						////// implement: way1 hit load
-						// send mem_resp = 1;
-						// set lru = 1;
+						mem_resp = 1;
+						//LRU needs to be way 1 now
+						if(lru_out == 1)
+							load_lru = 1;
 						////// what we dont need
-						// valid 
-						// dirty
-						// 
+						// valid 	: if we had a hit, it must already be valid
+						// dirty  	: data matches mem
+						// tag 		: 
+						// datastore / datastore in mux : we are not storeing, only reading
+						// pmem_read : hit, no pmem interaction
+						// pmem_write : hit, no pmem interation
 					end
 					else /// Way 2 Hit!
 					begin
 						////// implement: way2 hit load
-						// send mem_resp = 1;
-						// set lru = 0;
+						mem_resp = 1;
+						//LRU needs to be way 2 now
+						if(lru_out == 0)
+							load_lru = 1;
+						////// what we dont need
+						// valid 	: if we had a hit, it must already be valid
+						// dirty  	: data matches mem
+						// tag 		: 
+						// datastore / datastore in mux : we are not storeing, only reading
+						// pmem_read : hit, no pmem interaction
+						// pmem_write : hit, no pmem interation
 					end
 
 				end
-				else // Miss :(
+				else // Read:Miss :(
 				begin
 				
-					if(lru_out == 0)  
+					if(lru_out == 0)  // we will replace way 1
 					begin
 						////// implement: way1 miss load (mem read needed)
+						mem_resp = pmem_resp;
+						load_valid_w1 = 1;
+						load_tag_w1 = 1;
+						load_datastore_w1 = 1;
+						datastore_in_mux_sel = 1;
+						load_lru = 1;
+						datastore_in_mux_sel = 1; // 0:parser; 1:pmem
+						pmem_read = 1;
+						pmem_address_mux_sel = 3;
+						////// what we dont need
+						// dirty : loaded mem matches physical
+						// pmem_write : we will never need pmem_write in this state
 					end
 					else //(lru_out == 1)  
 					begin
 						////// implement: way2 miss load (mem read needed)
+						mem_resp = pmem_resp;
+						load_valid_w2 = 1;
+						load_tag_w2 = 1;
+						load_datastore_w2 = 1;
+						datastore_in_mux_sel = 1;
+						load_lru = 1;
+						datastore_in_mux_sel = 1; // 0:parser; 1:pmem
+						pmem_read = 1;
+						pmem_address_mux_sel = 3;
+						////// what we dont need
+						// dirty : loaded mem matches physical
+						// pmem_write : we will never need pmem_write in this state
 					end
 
 				end
 			
 			end
 			
-			// we are storing
-			else //(mem_write ==1 )
+			// we are storing (into cache only)
+			else // (mem_write ==1 )
 			begin
 			
-				if(ishit_w1 ==1 || ishit_w2 ==1)  // Hit!
+				if(ishit_w1 ==1 || ishit_w2 ==1)  // Write: Hit!
 				begin
 					
 					if(ishit_w1 ==1)  // Way 1 Hit!
 					begin
 						////// implement: way1 hit store
+						load_dirty_w1 = 1;
+						//LRU needs to be way 2 now
+						if(lru_out == 0)
+							load_lru = 1;
+						mem_resp = 1;
+						load_datastore_w1 = 1;
+						datastore_in_mux_sel = 0; // 0:parser; 1:pmem
+						////// what we dont need
+						// valid 	: its a hit, should already be set.  
+						// tag: 	: it is a hit, should already be set.
+						// pmem not accessed for hit!
 					end
 					else /// Way 2 Hit!
 					begin
-						////// implement: way2 hit store
+						////// implement: way1 hit store
+						load_dirty_w2 = 1;
+						//LRU needs to be way 1 now
+						if(lru_out == 1)
+							load_lru = 1;
+						mem_resp = 1;
+						load_datastore_w2 = 1;
+						datastore_in_mux_sel = 0; // 0:parser; 1:pmem
+						////// what we dont need
+						// valid 	: its a hit, should already be set.  
+						// tag: 	: it is a hit, should already be set.
+						// pmem not accessed for hit!
 					end
 
 				end
-				else // Miss :(
+				else // Write: Miss :(
 				begin
 				
 					if(lru_out == 0)  
 					begin
 						////// implement: way1 miss store (mem read needed)
+						load_dirty_w1 =1;
+						load_valid_w1 = 1;
+						load_tag_w1 = 1;
+						load_datastore_w1 = 1;
+						load_lru = 1;
+						datastore_in_mux_sel = 1; // 0:parser; 1:pmem
+						mem_resp = pmem_resp;
+						pmem_read = 0;
+						pmem_address_mux_sel = 3;
+						////// what we dont need
+						// pmem_write : we did the write already.
 					end
 					else //(lru_out == 1)  
 					begin
 						////// implement: way2 miss store (mem read needed)
+						load_dirty_w2 = 1;
+						load_valid_w2 = 1;
+						load_tag_w2 = 1;
+						load_datastore_w2 = 1;
+						load_lru = 1;
+						datastore_in_mux_sel = 1; // 0:parser; 1:pmem
+						mem_resp = pmem_resp;
+						pmem_read = 0;
+						pmem_address_mux_sel = 3;
+						////// what we dont need
+						// pmem_write : we did the write already.
 					end
 
 				end
@@ -172,23 +268,12 @@ always_comb
 begin : next_state_logic
     /* Next state information and conditions (if any)
      * for transitioning between states */
-
-	// input lru_out,
-	// input logic ishit_w1,
-	// input logic ishit_w2,
-	// input logic isdirty_w1,
-	// input logic isdirty_w2,
-	// input logic mem_read,
-	// input logic mem_write,
-	// input logic pmem_resp,
-
-
 	case(state)
 		idle: begin
 			if(mem_read==0 && mem_write == 0)
 				next_state <= idle; 
 			else
-				next_state = evaluation;
+				next_state <= evaluation;
 		end
 		evaluation: begin
 			// if we miss for both ways
@@ -197,16 +282,16 @@ begin : next_state_logic
 				if(lru_out == 0) begin
 					// check if the LRU is dirty
 					if(isdirty_w1 == 1)
-						next_state = evacuation;
+						next_state <= evacuation;
 					else
-						next_state = load_store;
+						next_state <= load_store;
 				end
 				else begin 
 					// check if the LRU is dirty
 					if(isdirty_w2 == 1)
-						next_state = evacuation;
+						next_state <= evacuation;
 					else
-						next_state = load_store;
+						next_state <= load_store;
 				end
 			end
 			// we have a hit, no need to evacuate
@@ -215,12 +300,15 @@ begin : next_state_logic
 		end
 		evacuation: begin
 			if(pmem_resp == 0)
-				next_state = evacuation;
+				next_state <= evacuation;
 			else
-				next_state = load_store;
+				next_state <= load_store;
 		end
 		load_store: begin
-			next_state <= idle; 
+			if(pmem_resp == 0)
+				next_state <= load_store;
+			else
+				next_state <= idle; 
 		end
 	endcase
 

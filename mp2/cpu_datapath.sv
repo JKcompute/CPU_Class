@@ -167,8 +167,8 @@ mux8 regfilemux
     .d(pc_out),
     .e(zextlower_out),
     .f(zextupper_out),
-    .g(),
-    .h(),
+    .g(zextupper_out), // dont care, just to silence warning.  // dont care, just to silence warning. 
+    .h(zextupper_out), // dont care, just to silence warning. 
     .out(regfilemux_out)
 );
 
@@ -227,9 +227,9 @@ mux8 alumux
     .c(adj6_out),
     .d(zext4_out),
     .e(sext6_out), 
-    .f(),
-    .g(),
-    .h(),
+    .f(sext6_out), // dont care, just to silence warning. 
+    .g(sext6_out), // dont care, just to silence warning. 
+    .h(sext6_out), // dont care, just to silence warning. 
     .out(alumux_out)
 );
 

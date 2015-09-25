@@ -14,12 +14,12 @@ module mp2
 
 // // internal logic 
 logic mem_resp_wire;
-logic mem_rdata_wire;
+logic [15:0] mem_rdata_wire;
 logic mem_read_wire;
 logic mem_write_wire;
-logic mem_byte_enable_wire;
-logic mem_wdata_wire;
-logic mem_address_wire;
+logic [1:0] mem_byte_enable_wire;
+logic [15:0] mem_wdata_wire;
+logic [15:0] mem_address_wire;
 
 cache cache 
 (

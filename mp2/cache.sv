@@ -35,14 +35,14 @@ logic ishit_w2_wire;
 logic isdirty_w1_wire;
 logic isdirty_w2_wire;
 logic lru_out_wire;
-
-assign pmem_address = mem_address;
+logic [1:0] pmem_address_mux_sel_wire;
+ 
 
 cache_datapath cache_datapath
 (
 	.clk,
 	.load_dirty_w1(load_dirty_w1_wire),
-	.load_valid_w1(load_dirty_w1_wire),
+	.load_valid_w1(load_valid_w1_wire),
 	.load_tag_w1(load_tag_w1_wire),
 	.load_datastore_w1(load_datastore_w1_wire),
 	.load_dirty_w2(load_dirty_w2_wire),
@@ -62,7 +62,12 @@ cache_datapath cache_datapath
 	.pmem_rdata(pmem_rdata),
 	.mem_rdata(mem_rdata),
 	.pmem_wdata(pmem_wdata),
-	.mem_wdata(mem_wdata)
+	.mem_wdata(mem_wdata),
+	.mem_address(mem_address),
+	.pmem_address_mux_out(pmem_address),
+	.mem_byte_enable(mem_byte_enable),
+
+	.pmem_address_mux_sel(pmem_address_mux_sel_wire)
 );
 
 cache_control cache_control
@@ -89,7 +94,9 @@ cache_control cache_control
     .mem_write(mem_write),
 	.pmem_resp(pmem_resp),
 	.pmem_read(pmem_read),
-	.pmem_write(pmem_write)
+	.pmem_write(pmem_write),
+
+	.pmem_address_mux_sel(pmem_address_mux_sel_wire)
 );
 
 endmodule : cache
