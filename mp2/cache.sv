@@ -1,16 +1,16 @@
-import lc3b_types::*;
+//import lc3b_types::*;
 
 module cache
 (
-    input clk,
-    /* Memory signals */
-    output logic mem_resp,
-    output logic [15:0] mem_rdata,
-    input mem_read,
-    input mem_write,
-    input [1:0] mem_byte_enable,
-    input [15:0] mem_address,
-    input [15:0] mem_wdata,
+	 input clk,
+	 /* Memory signals */
+	 output logic mem_resp,
+	 output logic [15:0] mem_rdata,
+	 input mem_read,
+	 input mem_write,
+	 input [1:0] mem_byte_enable,
+	 input [15:0] mem_address,
+	 input [15:0] mem_wdata,
 
 	input pmem_resp,
 	output logic pmem_read,
@@ -66,7 +66,7 @@ cache_datapath cache_datapath
 	.mem_address(mem_address),
 	.pmem_address_mux_out(pmem_address),
 	.mem_byte_enable(mem_byte_enable),
-
+	.mem_write(mem_write),
 	.pmem_address_mux_sel(pmem_address_mux_sel_wire)
 );
 

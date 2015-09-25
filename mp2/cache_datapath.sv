@@ -31,6 +31,7 @@ module cache_datapath
 	output logic isdirty_w2,
 
 	input [127:0] pmem_rdata,
+	input mem_write,
 	output logic [15:0] mem_rdata,
 	output logic [127:0] pmem_wdata,
 	input [15:0] mem_wdata,
@@ -57,6 +58,7 @@ logic lru_w2_out;
 logic [127:0] datastore_array_w2_out;
 logic [15:0] datastore_out_mux_w2_out;
 logic [8:0] tag_array_w2_out;
+logic [127:0] datastore_parser_in_mux_out;
 logic [127:0] datastore_in_mux_out;
 
 // block assignments. 
@@ -175,7 +177,7 @@ array #(.width(128)) datastore_array_w2
 	.clk,
 	.write(load_datastore_w2),
 	.index(set), 
-	.datain(datastore_in_mux_out),
+	.datain(datastore_parser_out),
 	.dataout(datastore_array_w2_out)
 );
 
@@ -239,19 +241,18 @@ array #(.width(1)) lru
 	.dataout(lru_out)
 );
 
-mux2 #(.width(128)) datastore_in_mux
+mux2 #(.width(128)) datastore_parser_in_mux
 (
-	.a(datastore_parser_out),
-	.b(data_way_mux_128_out), //input from pMEM
+	.a(pmem_rdata), 			// input from pMEM
+	.b(data_way_mux_128_out), 	// input from current way
 	.sel(datastore_in_mux_sel),
-	.f(datastore_in_mux_out)
+	.f(datastore_parser_in_mux_out)
 );
 
 mux4 #(.width(16)) pmem_address_mux
 (
 	.a({tag_array_w1_out, set, 4'b0}), // way 1
 	.b({tag_array_w2_out, set, 4'b0}), // way 2
-
 	.c(mem_address), // cpu
 	.d(mem_address), // cpu
 	// 00: evacuating way 1
@@ -271,10 +272,11 @@ mux4 #(.width(16)) pmem_address_mux
 
 datastore_parser datastore_parser
 (
-	.datain(data_way_mux_128_out),
+	.datain(datastore_parser_in_mux_out),
 	.writedata(mem_wdata),
 	.mem_byte_enable(mem_byte_enable),
 	.offset(offset), 
+	.mem_write(mem_write),
 	.dataout(datastore_parser_out)
 );
 
