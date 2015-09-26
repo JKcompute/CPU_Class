@@ -21,13 +21,7 @@ logic ready;
 /* Initialize memory contents from memory.lst file */
 initial
 begin
-    //$readmemh("memory.lst", mem);
-    //$readmemh("mp0test.lst", mem);
-    //$readmemh("mp2test.lst", mem);
-    //$readmemh("mp2-cp.lst", mem);
-    //$readmemh("mp2-final.lst", mem);
-    $readmemh("mp12-test.lst",mem);
-    //$readmemh("LDBSTBtest.lst",mem);
+    $readmemh("memory.lst", mem);
 end
 
 assign internal_address = address[15:4];

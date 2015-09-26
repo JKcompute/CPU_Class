@@ -16,6 +16,7 @@ module cache_datapath
 
 	input load_lru,
 	output logic lru_out,
+	input lru_in,
 
 	input datastore_in_mux_sel,
 	input [1:0] pmem_address_mux_sel,
@@ -24,6 +25,12 @@ module cache_datapath
 	input [2:0] set,
 	input [3:0] offset,
 
+	output logic dirty_compare_w1_out,
+	output logic dirty_compare_w2_out,
+
+	input dirty_array_w1_in,
+	input dirty_array_w2_in,
+
 	output logic ishit_w1,
 	output logic ishit_w2,
 
@@ -31,34 +38,34 @@ module cache_datapath
 	output logic isdirty_w2,
 
 	input [127:0] pmem_rdata,
-	input mem_write,
 	output logic [15:0] mem_rdata,
+	
+	input mem_write,
+	
 	output logic [127:0] pmem_wdata,
 	input [15:0] mem_wdata,
+
 	input [15:0] mem_address,
 	output [15:0] pmem_address_mux_out,
 	input [1:0] mem_byte_enable 
 );
 
 // internal signals
-logic dirty_compare_w1_out;
+
 logic dirty_array_w1_out;
 logic valid_array_w1_out;
-logic lru_w1_out;
 logic [127:0] datastore_array_w1_out;
-logic [127:0] data_way_mux_128_out;
+logic [127:0] data_way_mux_128_parser_out;
 logic [15:0] datastore_out_mux_w1_out;
 logic [8:0] tag_array_w1_out;
 logic [127:0] datastore_parser_out;
 
-logic dirty_compare_w2_out;
+
 logic dirty_array_w2_out;
 logic valid_array_w2_out;
-logic lru_w2_out;
 logic [127:0] datastore_array_w2_out;
 logic [15:0] datastore_out_mux_w2_out;
 logic [8:0] tag_array_w2_out;
-logic [127:0] datastore_parser_in_mux_out;
 logic [127:0] datastore_in_mux_out;
 
 // block assignments. 
@@ -78,7 +85,7 @@ array #(.width(1)) dirty_array_w1
 	.clk,
 	.write(load_dirty_w1),
 	.index(set), 
-	.datain((dirty_compare_w1_out || dirty_array_w1_out)),
+	.datain(dirty_array_w1_in),
 	.dataout(dirty_array_w1_out)
 );
 
@@ -105,7 +112,7 @@ array #(.width(128)) datastore_array_w1
 	.clk,
 	.write(load_datastore_w1),
 	.index(set), 
-	.datain(datastore_parser_out),
+	.datain(datastore_in_mux_out),
 	.dataout(datastore_array_w1_out)
 );
 
@@ -150,7 +157,7 @@ array #(.width(1)) dirty_array_w2
 	.clk,
 	.write(load_dirty_w2),
 	.index(set), 
-	.datain((dirty_compare_w2_out || dirty_array_w2_out)),
+	.datain(dirty_array_w2_in),
 	.dataout(dirty_array_w2_out)
 );
 
@@ -177,21 +184,21 @@ array #(.width(128)) datastore_array_w2
 	.clk,
 	.write(load_datastore_w2),
 	.index(set), 
-	.datain(datastore_parser_out),
+	.datain(datastore_in_mux_out),
 	.dataout(datastore_array_w2_out)
 );
 
 mux8 #(.width(16)) datastore_out_mux_w2
 (
 	.sel(offset[3:1]),
-	.a(datastore_array_w1_out[15:0]),
-	.b(datastore_array_w1_out[31:16]), 
-	.c(datastore_array_w1_out[47:32]), 
-	.d(datastore_array_w1_out[63:48]), 
-	.e(datastore_array_w1_out[79:64]), 
-	.f(datastore_array_w1_out[95:80]), 
-	.g(datastore_array_w1_out[111:96]), 
-	.h(datastore_array_w1_out[127:112]),
+	.a(datastore_array_w2_out[15:0]),
+	.b(datastore_array_w2_out[31:16]), 
+	.c(datastore_array_w2_out[47:32]), 
+	.d(datastore_array_w2_out[63:48]), 
+	.e(datastore_array_w2_out[79:64]), 
+	.f(datastore_array_w2_out[95:80]), 
+	.g(datastore_array_w2_out[111:96]), 
+	.h(datastore_array_w2_out[127:112]),
 	.out(datastore_out_mux_w2_out)
 );
 
@@ -214,8 +221,6 @@ dirty_hit dirty_hit_w2
 // shared / other
 ///////////////
 
-assign pmem_wdata = data_way_mux_128_out;
-
 mux2 data_way_mux_16
 (
 	.sel(ishit_w2),
@@ -224,12 +229,20 @@ mux2 data_way_mux_16
 	.f(mem_rdata)
 );
 
-mux2 #(.width(128)) data_way_mux_128
+mux2 #(.width(128)) data_way_mux_128_parser
+(
+	.sel(ishit_w2),
+	.a(datastore_array_w1_out),
+	.b(datastore_array_w2_out),
+	.f(data_way_mux_128_parser_out)
+);
+
+mux2 #(.width(128)) data_way_mux_128_pmem
 (
 	.sel(lru_out),
 	.a(datastore_array_w1_out),
 	.b(datastore_array_w2_out),
-	.f(data_way_mux_128_out)
+	.f(pmem_wdata)
 );
 
 array #(.width(1)) lru
@@ -237,16 +250,16 @@ array #(.width(1)) lru
 	.clk,
 	.write(load_lru),
 	.index(set), 
-	.datain(~lru_out),
+	.datain(lru_in),
 	.dataout(lru_out)
 );
 
-mux2 #(.width(128)) datastore_parser_in_mux
+mux2 #(.width(128)) datastore_in_mux
 (
 	.a(pmem_rdata), 			// input from pMEM
-	.b(data_way_mux_128_out), 	// input from current way
+	.b(datastore_parser_out), 	// input from current way
 	.sel(datastore_in_mux_sel),
-	.f(datastore_parser_in_mux_out)
+	.f(datastore_in_mux_out)
 );
 
 mux4 #(.width(16)) pmem_address_mux
@@ -272,7 +285,7 @@ mux4 #(.width(16)) pmem_address_mux
 
 datastore_parser datastore_parser
 (
-	.datain(datastore_parser_in_mux_out),
+	.datain(data_way_mux_128_parser_out),
 	.writedata(mem_wdata),
 	.mem_byte_enable(mem_byte_enable),
 	.offset(offset), 

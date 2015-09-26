@@ -35,7 +35,13 @@ logic ishit_w2_wire;
 logic isdirty_w1_wire;
 logic isdirty_w2_wire;
 logic lru_out_wire;
+logic lru_in_wire;
 logic [1:0] pmem_address_mux_sel_wire;
+logic dirty_array_w1_in_wire;
+logic dirty_array_w2_in_wire;
+logic dirty_compare_w1_out_wire;
+logic dirty_compare_w2_out_wire;
+
  
 
 cache_datapath cache_datapath
@@ -52,6 +58,7 @@ cache_datapath cache_datapath
 	.load_lru(load_lru_wire),
 	.datastore_in_mux_sel(datastore_in_mux_sel_wire),
 	.lru_out(lru_out_wire),
+	.lru_in(lru_in_wire),
 	.tag(mem_address[15:7]),
 	.set(mem_address[6:4]),
 	.offset(mem_address[3:0]),
@@ -67,7 +74,11 @@ cache_datapath cache_datapath
 	.pmem_address_mux_out(pmem_address),
 	.mem_byte_enable(mem_byte_enable),
 	.mem_write(mem_write),
-	.pmem_address_mux_sel(pmem_address_mux_sel_wire)
+	.pmem_address_mux_sel(pmem_address_mux_sel_wire),
+	.dirty_compare_w1_out(dirty_compare_w1_out_wire),
+	.dirty_compare_w2_out(dirty_compare_w2_out_wire),
+	.dirty_array_w1_in(dirty_array_w1_in_wire),
+	.dirty_array_w2_in(dirty_array_w2_in_wire)
 );
 
 cache_control cache_control
@@ -88,6 +99,7 @@ cache_control cache_control
 	.isdirty_w1(isdirty_w1_wire),
 	.isdirty_w2(isdirty_w2_wire),
 	.lru_out(lru_out_wire),
+	.lru_in(lru_in_wire),
 	// Memory signals
     .mem_resp(mem_resp),
     .mem_read(mem_read),
@@ -95,7 +107,10 @@ cache_control cache_control
 	.pmem_resp(pmem_resp),
 	.pmem_read(pmem_read),
 	.pmem_write(pmem_write),
-
+	.dirty_array_w1_in(dirty_array_w1_in_wire),
+	.dirty_array_w2_in(dirty_array_w2_in_wire),
+	.dirty_compare_w1_out(dirty_compare_w1_out_wire),
+	.dirty_compare_w2_out(dirty_compare_w2_out_wire),
 	.pmem_address_mux_sel(pmem_address_mux_sel_wire)
 );
 

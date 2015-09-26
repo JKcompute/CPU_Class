@@ -1,73 +1,139 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfile/load
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfile/in
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfile/src_a
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/src_b[2]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/src_b[1]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/src_b[0]} -radix hexadecimal}} -subitemconfig {{/mp2_tb/dut/datapath/regfile/src_b[2]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/src_b[1]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/src_b[0]} {-height 15 -radix hexadecimal}} /mp2_tb/dut/datapath/regfile/src_b
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfile/dest
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/reg_a[15]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[14]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[13]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[12]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[11]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[10]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[9]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[8]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[7]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[6]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[5]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[4]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[3]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[2]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[1]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_a[0]} -radix hexadecimal}} -subitemconfig {{/mp2_tb/dut/datapath/regfile/reg_a[15]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[14]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[13]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[12]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[11]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[10]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[9]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[8]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[7]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[6]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[5]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[4]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[3]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[2]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[1]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_a[0]} {-height 15 -radix hexadecimal}} /mp2_tb/dut/datapath/regfile/reg_a
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/reg_b[15]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[14]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[13]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[12]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[11]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[10]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[9]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[8]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[7]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[6]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[5]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[4]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[3]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[2]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[1]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/reg_b[0]} -radix hexadecimal}} -subitemconfig {{/mp2_tb/dut/datapath/regfile/reg_b[15]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[14]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[13]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[12]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[11]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[10]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[9]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[8]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[7]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[6]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[5]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[4]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[3]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[2]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[1]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/reg_b[0]} {-height 15 -radix hexadecimal}} /mp2_tb/dut/datapath/regfile/reg_b
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/data[7]} -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/data[7][15]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][14]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][13]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][12]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][11]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][10]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][9]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][8]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][7]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][6]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][5]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][4]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][3]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][2]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][1]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][0]} -radix decimal}}} {{/mp2_tb/dut/datapath/regfile/data[6]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[5]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[4]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[3]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[2]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[1]} -radix hexadecimal} {{/mp2_tb/dut/datapath/regfile/data[0]} -radix hexadecimal}} -expand -subitemconfig {{/mp2_tb/dut/datapath/regfile/data[7]} {-height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/regfile/data[7][15]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][14]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][13]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][12]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][11]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][10]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][9]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][8]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][7]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][6]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][5]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][4]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][3]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][2]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][1]} -radix decimal} {{/mp2_tb/dut/datapath/regfile/data[7][0]} -radix decimal}}} {/mp2_tb/dut/datapath/regfile/data[7][15]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][14]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][13]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][12]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][11]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][10]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][9]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][8]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][7]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][6]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][5]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][4]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][3]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][2]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][1]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[7][0]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/regfile/data[6]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[5]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[4]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[3]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[2]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[1]} {-height 15 -radix hexadecimal} {/mp2_tb/dut/datapath/regfile/data[0]} {-height 15 -radix hexadecimal}} /mp2_tb/dut/datapath/regfile/data
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/cccomp/nzp_input
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/cccomp/branch_cc
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/cccomp/out
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/state
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/next_state
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/opcode
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/instruction11
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/instruction5
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/instruction4
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/clk
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/read
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/write
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/memory/byte_enable[1]} -radix hexadecimal} {{/mp2_tb/memory/byte_enable[0]} -radix hexadecimal}} -subitemconfig {{/mp2_tb/memory/byte_enable[1]} {-height 15 -radix hexadecimal} {/mp2_tb/memory/byte_enable[0]} {-height 15 -radix hexadecimal}} /mp2_tb/memory/byte_enable
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/address
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/wdata
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/resp
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/rdata
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/internal_address
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/ready
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/memory/state
-add wave -noupdate -height 15 /mp2_tb/memory/next_state
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/control/alumux_sel
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alu/aluop
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alu/a
-add wave -noupdate -height 15 -radix hexadecimal -childformat {{{/mp2_tb/dut/datapath/alu/b[15]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[14]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[13]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[12]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[11]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[10]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[9]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[8]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[7]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[6]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[5]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[4]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[3]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[2]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[1]} -radix decimal} {{/mp2_tb/dut/datapath/alu/b[0]} -radix decimal}} -subitemconfig {{/mp2_tb/dut/datapath/alu/b[15]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[14]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[13]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[12]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[11]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[10]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[9]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[8]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[7]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[6]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[5]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[4]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[3]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[2]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[1]} {-height 15 -radix decimal} {/mp2_tb/dut/datapath/alu/b[0]} {-height 15 -radix decimal}} /mp2_tb/dut/datapath/alu/b
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alu/f
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alumux/sel
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alumux/a
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alumux/b
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alumux/c
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/alumux/d
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/zextlower/in
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/zextlower/out
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/zextupper/in
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/zextupper/out
-add wave -noupdate -height 15 -radix decimal /mp2_tb/dut/datapath/regfilemux/sel
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/a
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/b
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/c
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/d
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/e
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/f
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/regfilemux/out
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mar/load
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mar/in
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mar/out
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mar/data
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mdr/load
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mdr/in
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mdr/out
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/mdr/data
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/storemux/sel
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/storemux/a
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/storemux/b
-add wave -noupdate -height 15 -radix hexadecimal /mp2_tb/dut/datapath/storemux/f
+add wave -noupdate /mp2_tb/clk
+add wave -noupdate /mp2_tb/pmem_resp
+add wave -noupdate /mp2_tb/pmem_read
+add wave -noupdate /mp2_tb/pmem_write
+add wave -noupdate -radix binary /mp2_tb/dut/cache/cache_datapath/mem_rdata
+add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_read
+add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_write
+add wave -noupdate /mp2_tb/pmem_address
+add wave -noupdate /mp2_tb/pmem_rdata
+add wave -noupdate /mp2_tb/pmem_wdata
+add wave -noupdate /mp2_tb/dut/cpu/cpu_control/state
+add wave -noupdate /mp2_tb/dut/cpu/cpu_control/next_state
+add wave -noupdate /mp2_tb/dut/cpu/cpu_datapath/regfile/data
+add wave -noupdate /mp2_tb/dut/cpu/cpu_datapath/pc/data
+add wave -noupdate /mp2_tb/dut/cpu/cpu_datapath/opcode
+add wave -noupdate -expand /mp2_tb/dut/cpu/cpu_datapath/regfile/data
+add wave -noupdate -expand /mp2_tb/dut/cache/cache_datapath/datastore_array_w1/data
+add wave -noupdate -expand /mp2_tb/dut/cache/cache_datapath/datastore_array_w2/data
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/clk
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/data
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w1/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w1/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w1/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w1/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w2/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w2/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w2/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_array_w2/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/lru/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w1/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w1/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w1/out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w1/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w1/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w1/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w1/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w1/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w1/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w1/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w1/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w1/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w1/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w1/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w1/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/c
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/d
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/e
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/g
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/h
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w1/out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/tag
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/waytag
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/valid_in
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/dirty_in
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/hit_out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/dirty_out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w1/tag_compare
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w2/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w2/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_compare_w2/out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w2/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w2/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w2/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_array_w2/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w2/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w2/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w2/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/valid_array_w2/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w2/write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w2/index
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w2/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/tag_array_w2/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/c
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/d
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/e
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/g
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/h
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_out_mux_w2/out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/tag
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/waytag
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/valid_in
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/dirty_in
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/hit_out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/dirty_out
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/dirty_hit_w2/tag_compare
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_16/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_16/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_16/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_16/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_parser/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_parser/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_parser/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_parser/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_pmem/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_pmem/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_pmem/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/data_way_mux_128_pmem/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_in_mux/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_in_mux/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_in_mux/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_in_mux/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/sel
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/a
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/b
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/c
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/d
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/pmem_address_mux/f
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/datain
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/writedata
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/mem_byte_enable
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/offset
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/mem_write
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/dataout
+add wave -noupdate /mp2_tb/dut/cache/cache_datapath/datastore_parser/internal_offset
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 5} {8673793 ps} 0}
+WaveRestoreCursors {{Cursor 1} {503291 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 304
-configure wave -valuecolwidth 131
+configure wave -namecolwidth 424
+configure wave -valuecolwidth 152
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -80,4 +146,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {6011558 ps} {9157286 ps}
+WaveRestoreZoom {19461156 ps} {20028361 ps}
