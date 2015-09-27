@@ -107,11 +107,13 @@ begin : state_actions
 					end
 				
 				end
+				
 				if(mem_write == 1)
 				begin
 					if(ishit_w1 == 1)
 					begin
-						load_dirty_w1 = 1;
+						//if(dirty_compare_w1_out)
+							load_dirty_w1 = 1;
 						dirty_array_w1_in = 1;
 						load_datastore_w1 = 1;
 						datastore_in_mux_sel = 1;
@@ -121,7 +123,8 @@ begin : state_actions
 					end
 					if(ishit_w2 == 1)
 					begin
-						load_dirty_w2 = 1;
+						//if(dirty_compare_w2_out)
+							load_dirty_w2 = 1;
 						dirty_array_w2_in = 1;
 						load_datastore_w2 = 1;
 						datastore_in_mux_sel = 1;
@@ -142,11 +145,15 @@ begin : state_actions
 			begin
 				pmem_write = 1;
 				pmem_address_mux_sel = 0;
+				// load_lru = 1;
+				// lru_in = 1;
 			end
 			else
 			begin
 				pmem_write = 1;
 				pmem_address_mux_sel = 1;
+				// load_lru = 1;
+				// lru_in = 0;
 			end
 		end
 

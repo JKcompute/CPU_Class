@@ -4,9 +4,46 @@ add wave -noupdate /mp2_tb/clk
 add wave -noupdate /mp2_tb/pmem_resp
 add wave -noupdate /mp2_tb/pmem_read
 add wave -noupdate /mp2_tb/pmem_write
+add wave -noupdate /mp2_tb/pmem_address
+add wave -noupdate /mp2_tb/pmem_rdata
+add wave -noupdate /mp2_tb/pmem_wdata
+add wave -noupdate /mp2_tb/clk
+add wave -noupdate /mp2_tb/pmem_resp
+add wave -noupdate /mp2_tb/pmem_read
+add wave -noupdate /mp2_tb/pmem_write
 add wave -noupdate -radix binary /mp2_tb/dut/cache/cache_datapath/mem_rdata
 add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_read
 add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_write
+add wave -noupdate /mp2_tb/dut/cache/cache_control/clk
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_dirty_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_valid_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_tag_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_datastore_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_dirty_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_valid_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_tag_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_datastore_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/load_lru
+add wave -noupdate /mp2_tb/dut/cache/cache_control/datastore_in_mux_sel
+add wave -noupdate /mp2_tb/dut/cache/cache_control/pmem_address_mux_sel
+add wave -noupdate /mp2_tb/dut/cache/cache_control/lru_out
+add wave -noupdate /mp2_tb/dut/cache/cache_control/lru_in
+add wave -noupdate /mp2_tb/dut/cache/cache_control/dirty_array_w1_in
+add wave -noupdate /mp2_tb/dut/cache/cache_control/dirty_array_w2_in
+add wave -noupdate /mp2_tb/dut/cache/cache_control/dirty_compare_w1_out
+add wave -noupdate /mp2_tb/dut/cache/cache_control/dirty_compare_w2_out
+add wave -noupdate /mp2_tb/dut/cache/cache_control/ishit_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/ishit_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/isdirty_w1
+add wave -noupdate /mp2_tb/dut/cache/cache_control/isdirty_w2
+add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_resp
+add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_read
+add wave -noupdate /mp2_tb/dut/cache/cache_control/mem_write
+add wave -noupdate /mp2_tb/dut/cache/cache_control/pmem_resp
+add wave -noupdate /mp2_tb/dut/cache/cache_control/pmem_read
+add wave -noupdate /mp2_tb/dut/cache/cache_control/pmem_write
+add wave -noupdate /mp2_tb/dut/cache/cache_control/state
+add wave -noupdate /mp2_tb/dut/cache/cache_control/next_state
 add wave -noupdate /mp2_tb/pmem_address
 add wave -noupdate /mp2_tb/pmem_rdata
 add wave -noupdate /mp2_tb/pmem_wdata
@@ -146,4 +183,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {19461156 ps} {20028361 ps}
+WaveRestoreZoom {347490 ps} {914695 ps}

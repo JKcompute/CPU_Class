@@ -75,7 +75,7 @@ logic [127:0] datastore_in_mux_out;
 ///////////////
 comparator #(.width(16)) dirty_compare_w1
 (
-	.a (mem_rdata),
+	.a (mem_wdata),
 	.b (datastore_out_mux_w1_out),
 	.out (dirty_compare_w1_out)
 );
@@ -147,7 +147,7 @@ dirty_hit dirty_hit_w1
 ///////////////
 comparator #(.width(16)) dirty_compare_w2
 (
-	.a (mem_rdata),
+	.a (mem_wdata),
 	.b (datastore_out_mux_w2_out),
 	.out (dirty_compare_w2_out)
 );
