@@ -122,6 +122,7 @@ OK6:
 	BRp OK7				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!
 OK7:
+	not r6 
 	LEA R6, COOL      	
 	BRp OK8				; Branch if Ok 
 	LDR R7, R0, BAD 	; This is the check.  we dont want to mess up R7!

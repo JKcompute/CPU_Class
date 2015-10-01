@@ -21,7 +21,8 @@ logic ready;
 /* Initialize memory contents from memory.lst file */
 initial
 begin
-    $readmemh("memory.lst", mem);
+    //$readmemh("memory.lst", mem);
+    $readmemh("mp2-cp3.lst", mem);
     // $readmemh("mp12-test.lst", mem);
     // $readmemh("mp1-final.lst", mem);
 

@@ -24,7 +24,7 @@ always_comb
 			begin
 				hit_out = 1'b1;
 			end
-			if(tag_compare && valid_in && dirty_in)
+			if(valid_in && dirty_in)
 			begin
 				dirty_out = 1'b1;
 			end

@@ -92,17 +92,18 @@ begin : state_actions
 			begin
 				if(mem_read == 1)
 				begin
-					
-					if(ishit_w1 == 1)
-					begin
 						mem_resp = 1;
 						load_lru = 1;
+					if(ishit_w1 == 1)
+					begin
+						// mem_resp = 1;
+						// load_lru = 1;
 						lru_in = 1;
 					end
 					if(ishit_w2 == 1)
 					begin
-						mem_resp = 1;
-						load_lru = 1;
+						// mem_resp = 1;
+						// load_lru = 1;
 						lru_in = 0;
 					end
 				
@@ -110,13 +111,15 @@ begin : state_actions
 				
 				if(mem_write == 1)
 				begin
+					datastore_in_mux_sel = 1;
+
 					if(ishit_w1 == 1)
 					begin
 						//if(dirty_compare_w1_out)
 							load_dirty_w1 = 1;
 						dirty_array_w1_in = 1;
 						load_datastore_w1 = 1;
-						datastore_in_mux_sel = 1;
+						//datastore_in_mux_sel = 1;
 						mem_resp = 1;
 						load_lru = 1;
 						lru_in = 1;
@@ -127,7 +130,7 @@ begin : state_actions
 							load_dirty_w2 = 1;
 						dirty_array_w2_in = 1;
 						load_datastore_w2 = 1;
-						datastore_in_mux_sel = 1;
+						//datastore_in_mux_sel = 1;
 						mem_resp = 1;
 						load_lru = 1;
 						lru_in = 0;
@@ -166,7 +169,8 @@ begin : state_actions
 			begin
 				load_tag_w1 = 1;
 				load_valid_w1 = 1;
-				load_datastore_w1 = 1;
+				if(pmem_resp == 1)
+					load_datastore_w1 = 1;
 				load_dirty_w1 = 1;
 				dirty_array_w1_in = 0;
 				//load_lru = 1;
@@ -176,7 +180,8 @@ begin : state_actions
 			begin
 				load_tag_w2 = 1;
 				load_valid_w2 = 1;
-				load_datastore_w2 = 1;
+				if(pmem_resp == 1)
+					load_datastore_w2 = 1;
 				load_dirty_w2 = 1;
 				dirty_array_w2_in = 0;
 				//load_lru = 1;

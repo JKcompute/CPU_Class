@@ -211,6 +211,7 @@ begin : state_actions
 		s_lea: begin
 			regfilemux_sel = 2;
 			load_regfile = 1;
+			load_cc = 1;
 		end
 		s_storepc: begin 
 			load_regfile = 1;
