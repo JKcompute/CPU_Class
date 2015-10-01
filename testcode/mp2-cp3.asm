@@ -1,0 +1,238 @@
+
+; Need to test the following. 
+; All load instructions
+; make sure that hits and misses work for load and store.  
+; 
+;
+
+ORIGIN 0
+SEGMENT 0 CODE:
+;; instrunction will be loaded into w0s0
+	LEA R1, data
+	LDR R2, R1, l2p ; R2 points to the head of segment line2
+	LDR R3, R1, l3p ; R3 points to the head of segment line3
+;; load up all of the cache to make sure that all the arrays 
+;;  are being set correctly. 
+	LDR R4, R2, A10 ; cache miss, load:s1
+	LDR R4, R2, A20 ; cache miss, load:s2
+	LDR R4, R2, A30 ; cache miss, load:s3
+	LDR R4, R3, A40 ; cache miss, load:s4
+	LDR R4, R3, A50 ; cache miss, load:s5
+	LDR R4, R3, A60 ; cache miss, load:s6
+	LDR R7, R3, A70 ; cache miss, load:s7
+
+	LDR R4, R7, B00 ; cache miss, load:s0
+	LDR R4, R7, B10 ; cache miss, load:s1
+	LDR R4, R7, B20 ; cache miss, load:s2
+	LDR R7, R7, B30 ; cache miss, load:s3
+	LDR R4, R7, B40 ; cache miss, load:s4
+	LDR R4, R7, A50 ; cache miss, load:s5
+	LDR R4, R7, A60 ; cache miss, load:s6
+	LDR R4, R7, A70 ; cache miss, load:s7
+
+	ADD R7, R0, -16
+
+	LDR R4, R1, good ; this wil also miss load:w0s2
+	LEA r2, line0A	
+	ADD r3, r2, 1
+	STR r4, r2, A02  ;; stores good into cache line store:w0s2
+	STR r4, r2, A04  ;; stores good into cache line store:w0s2
+
+	STB r4, r2, A06  ;; stores good into cache line store:w0s2
+	RSHFL r4, r4, 8
+	STB r4, r3, A06  ;; stores good into cache line store:w0s2
+
+	lea r7, line0C
+	ldr r7, r7, C00
+	ldr r7, r7, B00
+
+
+	lea r5, data
+	add r6, r5, 1
+	ldr r4, r5, cool
+	sti r4, r7, B40 
+
+	ldb r4, r5, count
+	ldb r4, r6, count
+	ldi r4, r5, boob
+
+	ldi r3, r5, fin 
+	ldr r3, r3, C05
+
+
+inf:
+	BRnzp inf
+
+
+SEGMENT 96 data:
+;l1p:	DATA2 leetline
+l2p:	DATA2 line0A
+l3p:	DATA2 line4A
+fin: 	DATA2 A07
+badd: 	DATA2 4xBADD
+bad: 	DATA2 4xBAD
+good: 	DATA2 4x600D
+god: 	DATA2 4x060D
+count:	DATA2 4x1234
+cool:  	DATA2 4xC001
+dude: 	DATA2 4xD00D
+boob:	DATA2 A14
+
+
+
+SEGMENT 32 line0A:
+A00:	DATA2 line0B ; 4xA0A0
+A01:	DATA2 4xA0A1
+A02:	DATA2 4xA0A2
+A03:	DATA2 4xA0A3
+A04:	DATA2 4xA0A4
+A05:	DATA2 4xA0A5
+A06:	DATA2 4xA0A6
+A07:	DATA2 line0C
+;SEGMENT 16 line1A:
+A10:	DATA2 4xA1A0
+A11:	DATA2 4xA1A1
+A12:	DATA2 4xA1A2
+A13:	DATA2 4xA1A3
+A14:	DATA2 4xB00B
+A15:	DATA2 4xA1A5
+A16:	DATA2 4xA1A6
+A17:	DATA2 4xA1A7
+;SEGMENT 16 line2A:
+A20:	DATA2 4xA2A0
+A21:	DATA2 4xA2A1
+A22:	DATA2 4xA2A2
+A23:	DATA2 4xA2A3
+A24:	DATA2 4xA2A4
+A25:	DATA2 4xA2A5
+A26:	DATA2 4xA2A6
+A27:	DATA2 4xA2A7
+;SEGMENT 16 line3A:
+A30:	DATA2 4xA3A0
+A31:	DATA2 4xA3A1
+A32:	DATA2 4xA3A2
+A33:	DATA2 4xA3A3
+A34:	DATA2 4xA3A4
+A35:	DATA2 4xA3A5
+A36:	DATA2 4xA3A6
+A37:	DATA2 4xA3A7
+SEGMENT 64 line4A:
+A40:	DATA2 4xA4A0
+A41:	DATA2 4xA4A1
+A42:	DATA2 4xA4A2
+A43:	DATA2 4xA4A3
+A44:	DATA2 4xA4A4
+A45:	DATA2 4xA4A5
+A46:	DATA2 4xA4A6
+A47:	DATA2 4xA4A7
+;SEGMENT 16 line5A:
+A50:	DATA2 4xA5A0
+A51:	DATA2 4xA5A1
+A52:	DATA2 4xA5A2
+A53:	DATA2 4xA5A3
+A54:	DATA2 4xA5A4
+A55:	DATA2 4xA5A5
+A56:	DATA2 4xA5A6
+A57:	DATA2 4xA5A7
+;SEGMENT 16 line6A:
+A60:	DATA2 4xA6A0
+A61:	DATA2 4xA6A1
+A62:	DATA2 4xA6A2
+A63:	DATA2 4xA6A3
+A64:	DATA2 4xA6A4
+A65:	DATA2 4xA6A5
+A66:	DATA2 4xA6A6
+A67:	DATA2 4xA6A7
+;SEGMENT 16 line7A:
+A70:	DATA2 line0B ; 4xA7A0
+A71:	DATA2 4xA7A1
+A72:	DATA2 4xA7A2
+A73:	DATA2 4xA7A3
+A74:	DATA2 4xA7A4
+A75:	DATA2 4xA7A5
+A76:	DATA2 4xA7A6
+A77:	DATA2 4xA7A7
+
+
+
+SEGMENT 64 line0B:
+B00:	DATA2 line4B
+B01:	DATA2 4xB0B1
+B02:	DATA2 4xB0B2
+B03:	DATA2 4xB0B3
+B04:	DATA2 4xB0B4
+B05:	DATA2 4xB0B5
+B06:	DATA2 4xB0B6
+B07:	DATA2 4xB0B7
+;SEGMENT 16 line1B:
+B10:	DATA2 4xB1B0
+B11:	DATA2 4xB1B1
+B12:	DATA2 4xB1B2
+B13:	DATA2 4xB1B3
+B14:	DATA2 4xB1B4
+B15:	DATA2 4xB1B5
+B16:	DATA2 4xB1B6
+B17:	DATA2 4xB1B7
+;SEGMENT 16 line2B:
+B20:	DATA2 4xB2B0
+B21:	DATA2 4xB2B1
+B22:	DATA2 4xB2B2
+B23:	DATA2 4xB2B3
+B24:	DATA2 4xB2B4
+B25:	DATA2 4xB2B5
+B26:	DATA2 4xB2B6
+B27:	DATA2 4xB2B7
+;SEGMENT 16 line3B:
+B30:	DATA2 line4B;4xB3B0
+B31:	DATA2 4xB3B1
+B32:	DATA2 4xB3B2
+B33:	DATA2 4xB3B3
+B34:	DATA2 4xB3B4
+B35:	DATA2 4xB3B5
+B36:	DATA2 4xB3B6
+B37:	DATA2 4xB3B7
+SEGMENT 64 line4B:
+B40:	DATA2 C03
+B41:	DATA2 4xB4B1
+B42:	DATA2 4xB4B2
+B43:	DATA2 4xB4B3
+B44:	DATA2 4xB4B4
+B45:	DATA2 4xB4B5
+B46:	DATA2 4xB4B6
+B47:	DATA2 4xB4B7
+;SEGMENT 16 line5B:
+B50:	DATA2 4xB5B0
+B51:	DATA2 4xB5B1
+B52:	DATA2 4xB5B2
+B53:	DATA2 4xB5B3
+B54:	DATA2 4xB5B4
+B55:	DATA2 4xB5B5
+B56:	DATA2 4xB5B6
+B57:	DATA2 4xB5B7
+;SEGMENT 16 line6B:
+B60:	DATA2 4xB6B0
+B61:	DATA2 4xB6B1
+B62:	DATA2 4xB6B2
+B63:	DATA2 4xB6B3
+B64:	DATA2 4xB6B4
+B65:	DATA2 4xB6B5
+B66:	DATA2 4xB6B6
+B67:	DATA2 4xB6B7
+;SEGMENT 16 line7B:
+B70:	DATA2 4xB7B0
+B71:	DATA2 4xB7B1
+B72:	DATA2 4xB7B2
+B73:	DATA2 4xB7B3
+B74:	DATA2 4xB7B4
+B75:	DATA2 4xB7B5
+B76:	DATA2 4xB7B6
+B77:	DATA2 4xB7B7
+SEGMENT 64 line0C:
+C00:	DATA2 line0B
+C01:	DATA2 4xC0C1
+C02:	DATA2 4xD00D
+C03:	DATA2 4xBADD
+C04:	DATA2 4xC0C4
+C05:	DATA2 4xDEAD
+C06:	DATA2 4xC0C6
+C07:	DATA2 4xC0C7

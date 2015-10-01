@@ -8,46 +8,36 @@ module cache_datapath
 	input load_valid_w1,
 	input load_tag_w1,
 	input load_datastore_w1,
-
 	input load_dirty_w2,
 	input load_valid_w2,
 	input load_tag_w2,
 	input load_datastore_w2,
-
-	input load_lru,
-	output logic lru_out,
-	input lru_in,
-
 	input datastore_in_mux_sel,
 	input [1:0] pmem_address_mux_sel,
-
+	input load_lru,
 	input [8:0] tag,
 	input [2:0] set,
 	input [3:0] offset,
-
-	output logic dirty_compare_w1_out,
-	output logic dirty_compare_w2_out,
-
+	input lru_in,
 	input dirty_array_w1_in,
 	input dirty_array_w2_in,
+	input [127:0] pmem_rdata,
+	input mem_write,
+	input [15:0] mem_wdata,
+	input [15:0] mem_address,
+	input [1:0] mem_byte_enable,
 
+	output logic lru_out,
+	output logic dirty_compare_w1_out,
+	output logic dirty_compare_w2_out,
 	output logic ishit_w1,
 	output logic ishit_w2,
-
 	output logic isdirty_w1,
 	output logic isdirty_w2,
-
-	input [127:0] pmem_rdata,
 	output logic [15:0] mem_rdata,
-	
-	input mem_write,
-	
 	output logic [127:0] pmem_wdata,
-	input [15:0] mem_wdata,
+	output [15:0] pmem_address_mux_out
 
-	input [15:0] mem_address,
-	output [15:0] pmem_address_mux_out,
-	input [1:0] mem_byte_enable 
 );
 
 // internal signals
