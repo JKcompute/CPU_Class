@@ -1,65 +1,57 @@
 
-; Need to test the following. 
-; All load instructions
-; make sure that hits and misses work for load and store.  
-; 
-;
-
 ORIGIN 0
 SEGMENT 0 CODE:
-;; instrunction will be loaded into w0s0
+;; instruction will be loaded into w0s0
 	LEA R1, data
 	LDR R2, R1, l2p ; R2 points to the head of segment line2
 	LDR R3, R1, l3p ; R3 points to the head of segment line3
 ;; load up all of the cache to make sure that all the arrays 
 ;;  are being set correctly. 
-	LDR R4, R2, A10 ; cache miss, load:s1
-	LDR R4, R2, A20 ; cache miss, load:s2
-	LDR R4, R2, A30 ; cache miss, load:s3
-	LDR R4, R3, A40 ; cache miss, load:s4
-	LDR R4, R3, A50 ; cache miss, load:s5
-	LDR R4, R3, A60 ; cache miss, load:s6
-	LDR R7, R3, A70 ; cache miss, load:s7
+	LDR R4, R2, A10 ; load:s1
+	LDR R4, R2, A20 ; load:s2
+	LDR R4, R2, A30 ; load:s3
+	LDR R4, R3, A40 ; load:s4
+	LDR R4, R3, A50 ; load:s5
+	LDR R4, R3, A60 ; load:s6
+	LDR R7, R3, A70 ; load:s7
 
-	LDR R4, R7, B00 ; cache miss, load:s0
-	LDR R4, R7, B10 ; cache miss, load:s1
-	LDR R4, R7, B20 ; cache miss, load:s2
-	LDR R7, R7, B30 ; cache miss, load:s3
-	LDR R4, R7, B40 ; cache miss, load:s4
-	LDR R4, R7, A50 ; cache miss, load:s5
-	LDR R4, R7, A60 ; cache miss, load:s6
-	LDR R4, R7, A70 ; cache miss, load:s7
-
+	LDR R4, R7, B00 ; load:s0
+	LDR R4, R7, B10 ; load:s1
+	LDR R4, R7, B20 ; load:s2
+	LDR R7, R7, B30 ; load:s3
+	LDR R4, R7, B40 ; load:s4
+	LDR R4, R7, A50 ; load:s5
+	LDR R4, R7, A60 ; load:s6
+	LDR R4, R7, A70 ; load:s7
+;; Just to help find out spot
 	ADD R7, R0, -16
-
-	LDR R4, R1, good ; this wil also miss load:w0s2
+;; test to make sure that store works
+	LDR R4, R1, good 
 	LEA r2, line0A	
 	ADD r3, r2, 1
-	STR r4, r2, A02  ;; stores good into cache line store:w0s2
-	STR r4, r2, A04  ;; stores good into cache line store:w0s2
-
-	STB r4, r2, A06  ;; stores good into cache line store:w0s2
+	STR r4, r2, A02  
+	STR r4, r2, A04  
+;; test to make sure stb works
+	STB r4, r2, A06  
 	RSHFL r4, r4, 8
-	STB r4, r3, A06  ;; stores good into cache line store:w0s2
-
+	STB r4, r3, A06 
+;; test to make sure that LDR works
 	lea r7, line0C
 	ldr r7, r7, C00
 	ldr r7, r7, B00
-
-
+;; test to make sure that sti works
 	lea r5, data
 	add r6, r5, 1
 	ldr r4, r5, cool
 	sti r4, r7, B40 
-
+;; test to make sure that ldb works
 	ldb r4, r5, count
 	ldb r4, r6, count
+;; test to make sure that ldi works
 	ldi r4, r5, boob
-
 	ldi r3, r5, fin 
 	ldr r3, r3, C05
-
-
+;; finish in loop
 inf:
 	BRnzp inf
 
