@@ -73,14 +73,6 @@ begin : state_actions
 	lru_in = 0;
 	dirty_array_w1_in = 0;
 	dirty_array_w2_in = 0;
-	// input lru_out,
-	// input logic ishit_w1,
-	// input logic ishit_w2,
-	// input logic isdirty_w1,
-	// input logic isdirty_w2,
-	// input logic mem_read,
-	// input logic mem_write,
-	// input logic pmem_resp,
 
 	
 	/* Actions for each state */
@@ -96,14 +88,10 @@ begin : state_actions
 						load_lru = 1;
 					if(ishit_w1 == 1)
 					begin
-						// mem_resp = 1;
-						// load_lru = 1;
 						lru_in = 1;
 					end
 					if(ishit_w2 == 1)
 					begin
-						// mem_resp = 1;
-						// load_lru = 1;
 						lru_in = 0;
 					end
 				
@@ -112,27 +100,22 @@ begin : state_actions
 				if(mem_write == 1)
 				begin
 					datastore_in_mux_sel = 1;
-
+					mem_resp = 1;
+					load_lru = 1;
 					if(ishit_w1 == 1)
 					begin
-						//if(dirty_compare_w1_out)
+						if(~dirty_compare_w1_out)
 							load_dirty_w1 = 1;
 						dirty_array_w1_in = 1;
 						load_datastore_w1 = 1;
-						//datastore_in_mux_sel = 1;
-						mem_resp = 1;
-						load_lru = 1;
 						lru_in = 1;
 					end
 					if(ishit_w2 == 1)
 					begin
-						//if(dirty_compare_w2_out)
+						if(~dirty_compare_w2_out)
 							load_dirty_w2 = 1;
 						dirty_array_w2_in = 1;
 						load_datastore_w2 = 1;
-						//datastore_in_mux_sel = 1;
-						mem_resp = 1;
-						load_lru = 1;
 						lru_in = 0;
 					end
 				end
@@ -142,27 +125,19 @@ begin : state_actions
 
 		write_to_pmem: 
 		begin
-			//
 			pmem_write = 1;
 			if(lru_out == 0)
 			begin
-				pmem_write = 1;
 				pmem_address_mux_sel = 0;
-				// load_lru = 1;
-				// lru_in = 1;
 			end
 			else
 			begin
-				pmem_write = 1;
 				pmem_address_mux_sel = 1;
-				// load_lru = 1;
-				// lru_in = 0;
 			end
 		end
 
 		read_from_pmem: 
 		begin
-			//
 			pmem_read = 1;
 			pmem_address_mux_sel = 3;
 			if(lru_out == 0)
@@ -173,8 +148,6 @@ begin : state_actions
 					load_datastore_w1 = 1;
 				load_dirty_w1 = 1;
 				dirty_array_w1_in = 0;
-				//load_lru = 1;
-				//lru_in = 1;
 			end
 			else
 			begin
@@ -184,8 +157,6 @@ begin : state_actions
 					load_datastore_w2 = 1;
 				load_dirty_w2 = 1;
 				dirty_array_w2_in = 0;
-				//load_lru = 1;
-				//lru_in = 0;
 			end
 
 		end
@@ -200,15 +171,6 @@ begin : next_state_logic
     /* Next state information and conditions (if any)
      * for transitioning between states */
 	case(state)
-
-	// input lru_out,
-	// input logic ishit_w1,
-	// input logic ishit_w2,
-	// input logic isdirty_w1,
-	// input logic isdirty_w2,
-	// input logic mem_read,
-	// input logic mem_write,
-	// input logic pmem_resp,
 
 		idle_hit: 
 		begin

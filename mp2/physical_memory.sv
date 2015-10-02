@@ -22,12 +22,11 @@ logic ready;
 initial
 begin
     //$readmemh("memory.lst", mem);
-    $readmemh("mp2-cp3.lst", mem);
+    //$readmemh("mp2-cp2.lst", mem);
+    //$readmemh("mp2-cp3.lst", mem);
+    $readmemh("mp2-final.lst", mem);
     // $readmemh("mp12-test.lst", mem);
     // $readmemh("mp1-final.lst", mem);
-
-
-
 end
 
 assign internal_address = address[15:4];
