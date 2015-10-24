@@ -1,6 +1,7 @@
 # UIUC ECE411 First 3 Machine Problems
 ###All MPs
-All of these MPs were completed using SystemVerilog.
+The series of MPs are a walk though of the creation and (some) design of the Little Computer 3b (lc3b) microprocessor, with a level 1, 2-way set associative cache, using a LRU write-back eviction policy.  
+All of these MPs were completed using SystemVerilog.  
 MP specific notes are found below.  
 
 ###MP0
